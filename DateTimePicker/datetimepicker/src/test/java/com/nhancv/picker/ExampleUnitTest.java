@@ -1,4 +1,4 @@
-package com.nhancv.datetimepicker;
+package com.nhancv.picker;
 
 import org.junit.Test;
 

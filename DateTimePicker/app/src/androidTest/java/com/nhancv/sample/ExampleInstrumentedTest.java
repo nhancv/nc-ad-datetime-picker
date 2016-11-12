@@ -1,4 +1,4 @@
-package com.nhancv.datetimepicker;
+package com.nhancv.sample;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
