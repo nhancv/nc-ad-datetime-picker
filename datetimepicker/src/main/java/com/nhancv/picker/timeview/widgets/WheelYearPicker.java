@@ -9,14 +9,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * 年份选择器
- * <p>
- * Picker for Years
- *
- * @author AigeStudio 2016-07-12
- * @version 1
- */
 public class WheelYearPicker extends WheelPicker implements IWheelYearPicker {
     private int mYearStart = 1000, mYearEnd = 3000;
     private int mSelectedYear;

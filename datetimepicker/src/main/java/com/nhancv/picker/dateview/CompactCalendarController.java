@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import static com.nhancv.picker.dateview.CompactCalendarView.FILL_LARGE_INDICATOR;
 import static com.nhancv.picker.dateview.CompactCalendarView.NO_FILL_LARGE_INDICATOR;
 import static com.nhancv.picker.dateview.CompactCalendarView.SMALL_INDICATOR;
+import static java.security.AccessController.getContext;
 
 
 class CompactCalendarController {
@@ -95,6 +96,8 @@ class CompactCalendarController {
     private OverScroller scroller;
     private Paint dayPaint = new Paint();
     private Paint background = new Paint();
+    private Paint txtPaint = new Paint();
+    private Typeface headerTypeFace, txtTypeFace;
     private Rect textSizeRect;
     private String[] dayColumnNames;
 
@@ -102,6 +105,7 @@ class CompactCalendarController {
     private int multiEventIndicatorColor;
     private int currentDayBackgroundColor;
     private int calenderTextColor;
+    private int calenderHeaderTextColor;
     private int currentSelectedDayBackgroundColor;
     private int calenderBackgroundColor = Color.WHITE;
     private TimeZone timeZone;
@@ -116,6 +120,7 @@ class CompactCalendarController {
         this.textSizeRect = textSizeRect;
         this.currentDayBackgroundColor = currentDayBackgroundColor;
         this.calenderTextColor = calenderTextColor;
+        this.calenderHeaderTextColor = calenderTextColor;
         this.currentSelectedDayBackgroundColor = currentSelectedDayBackgroundColor;
         this.velocityTracker = velocityTracker;
         this.multiEventIndicatorColor = multiEventIndicatorColor;
@@ -132,6 +137,7 @@ class CompactCalendarController {
             try {
                 currentDayBackgroundColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarCurrentDayBackgroundColor, currentDayBackgroundColor);
                 calenderTextColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarTextColor, calenderTextColor);
+                calenderHeaderTextColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarHeaderTextColor, calenderHeaderTextColor);
                 currentSelectedDayBackgroundColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarCurrentSelectedDayBackgroundColor, currentSelectedDayBackgroundColor);
                 calenderBackgroundColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarBackgroundColor, calenderBackgroundColor);
                 multiEventIndicatorColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarMultiEventIndicatorColor, multiEventIndicatorColor);
@@ -175,6 +181,10 @@ class CompactCalendarController {
         dayPaint.getTextBounds("31", 0, "31".length(), textSizeRect);
         textHeight = textSizeRect.height() * 3;
         textWidth = textSizeRect.width() * 2;
+
+        txtPaint.setColor(Color.parseColor("#80009caa"));
+        headerTypeFace = Typeface.createFromAsset(context.getAssets(), "fonts/Lato-Medium.ttf");
+        txtTypeFace = Typeface.createFromAsset(context.getAssets(), "fonts/Lato-Bold.ttf");
 
         todayCalender.setTime(currentDate);
         setToMidnight(todayCalender);
@@ -827,6 +837,8 @@ class CompactCalendarController {
         int todayDayOfMonth = todayCalender.get(Calendar.DAY_OF_MONTH);
         boolean isAnimatingWithExpose = animationStatus == EXPOSE_CALENDAR_ANIMATION;
 
+        canvas.drawLine(paddingLeft * 1.5f, paddingHeight * 1.5f, getWidth() - paddingRight * 1.5f, paddingHeight * 1.5f, txtPaint);
+
         for (int dayColumn = 0, dayRow = 0; dayColumn <= 6; dayRow++) {
             if (dayRow == 7) {
                 dayRow = 0;
@@ -846,26 +858,30 @@ class CompactCalendarController {
             if (dayRow == 0) {
                 // first row, so draw the first letter of the day
                 if (shouldDrawDaysHeader) {
-                    dayPaint.setColor(calenderTextColor);
-                    dayPaint.setTypeface(Typeface.DEFAULT_BOLD);
+                    dayPaint.setTypeface(headerTypeFace);
                     dayPaint.setStyle(Paint.Style.FILL);
-                    dayPaint.setColor(calenderTextColor);
+                    dayPaint.setColor(calenderHeaderTextColor);
                     canvas.drawText(dayColumnNames[dayColumn], xPosition, paddingHeight, dayPaint);
-                    dayPaint.setTypeface(Typeface.DEFAULT);
+                    dayPaint.setColor(calenderTextColor);
+                    dayPaint.setTypeface(txtTypeFace);
                 }
             } else {
                 int day = ((dayRow - 1) * 7 + dayColumn + 1) - firstDayOfMonth;
                 if (isSameYearAsToday && isSameMonthAsToday && todayDayOfMonth == day && !isAnimatingWithExpose) {
                     // TODO calculate position of circle in a more reliable way
                     drawDayCircleIndicator(currentDayIndicatorStyle, canvas, xPosition, yPosition, currentDayBackgroundColor);
+                    dayPaint.setColor(Color.WHITE);
                 } else if (currentCalender.get(Calendar.DAY_OF_MONTH) == day && isSameMonthAsCurrentCalendar && !isAnimatingWithExpose) {
                     drawDayCircleIndicator(currentSelectedDayIndicatorStyle, canvas, xPosition, yPosition, currentSelectedDayBackgroundColor);
+                    dayPaint.setColor(Color.WHITE);
                 } else if (day == 1 && !isSameMonthAsCurrentCalendar && !isAnimatingWithExpose) {
                     drawDayCircleIndicator(currentSelectedDayIndicatorStyle, canvas, xPosition, yPosition, currentSelectedDayBackgroundColor);
+                    dayPaint.setColor(Color.WHITE);
+                } else {
+                    dayPaint.setColor(calenderTextColor);
                 }
                 if (day <= monthToDrawCalender.getActualMaximum(Calendar.DAY_OF_MONTH) && day > 0) {
                     dayPaint.setStyle(Paint.Style.FILL);
-                    dayPaint.setColor(calenderTextColor);
                     canvas.drawText(String.valueOf(day), xPosition, yPosition, dayPaint);
                 }
             }

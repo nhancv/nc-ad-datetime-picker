@@ -4,9 +4,6 @@ package com.nhancv.picker.timeview.model;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/9/14 0014.
- */
 public class Province implements Serializable {
     public String name;
     public List<City> city;

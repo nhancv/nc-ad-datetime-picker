@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="160dp"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:background="@drawable/wheel_datetime_picker_background"
+    android:orientation="horizontal">
+
+    <com.nhancv.picker.timeview.WheelPicker
+        android:id="@+id/vWheelHourTimePicker"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        app:wheel_atmospheric="true"
+        app:wheel_curtain="true"
+        app:wheel_curtain_color="#009caa"
+        app:wheel_curtain_padding="5dp"
+        app:wheel_curved="true"
+        app:wheel_cyclic="false"
+        app:wheel_item_align="right"
+        app:wheel_item_text_color="#6b6d6f"
+        app:wheel_item_text_size="18sp"
+        app:wheel_selected_item_text_color="#fffff0"
+        />
+
+    <com.nhancv.picker.timeview.WheelPicker
+        android:id="@+id/vWheelMinuteTimePicker"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        app:wheel_atmospheric="true"
+        app:wheel_curtain="true"
+        app:wheel_curtain_color="#009caa"
+        app:wheel_curtain_padding="5dp"
+        app:wheel_curved="true"
+        app:wheel_cyclic="false"
+        app:wheel_item_align="center"
+        app:wheel_item_text_color="#6b6d6f"
+        app:wheel_item_text_size="18sp"
+        app:wheel_selected_item_text_color="#fffff0"
+        />
+
+    <com.nhancv.picker.timeview.WheelPicker
+        android:id="@+id/vWheelTypeTimePicker"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        app:wheel_atmospheric="true"
+        app:wheel_curtain="true"
+        app:wheel_curtain_color="#009caa"
+        app:wheel_curtain_padding="5dp"
+        app:wheel_curved="true"
+        app:wheel_cyclic="false"
+        app:wheel_item_align="left"
+        app:wheel_item_text_color="#6b6d6f"
+        app:wheel_item_text_size="18sp"
+        app:wheel_selected_item_text_color="#fffff0"
+        />
+
+</LinearLayout>

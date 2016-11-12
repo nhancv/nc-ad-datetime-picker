@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
+    android:layout_width="315dp"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.nhancv.sample.MainActivity">
+    android:layout_gravity="center"
+    android:background="#ffffff"
+    android:orientation="vertical">
 
-    <com.nhancv.picker.dateview.CompactCalendarView
-        android:id="@+id/compactcalendar_view"
-        android:layout_width="fill_parent"
-        android:layout_height="250dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        app:compactCalendarBackgroundColor="@android:color/white"
-        app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
-        app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
-        app:compactCalendarMultiEventIndicatorColor="#fff"
-        app:compactCalendarTextColor="@android:color/black"
-        app:compactCalendarTextSize="12sp"
-        />
-
-    <com.nhancv.picker.timeview.WheelPicker
+    <com.nhancv.picker.dateview.CompactDatePicker
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        />
+        android:layout_height="wrap_content"/>
+
+    <com.nhancv.picker.timeview.widgets.WheelTimePicker
+        android:id="@+id/vTimePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btGetTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Time"/>
+    </LinearLayout>
 </LinearLayout>

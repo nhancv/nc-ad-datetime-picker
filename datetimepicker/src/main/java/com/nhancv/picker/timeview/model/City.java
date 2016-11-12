@@ -3,9 +3,6 @@ package com.nhancv.picker.timeview.model;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/9/14 0014.
- */
 public class City implements Serializable {
     public String name;
     public List<String> area;
