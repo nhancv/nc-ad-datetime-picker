@@ -20,7 +20,7 @@ import java.util.TimeZone;
  */
 
 public class CompactDatePicker extends LinearLayout {
-
+    private final Calendar calendar = Calendar.getInstance();
     private CompactCalendarView.CompactCalendarViewListener listener;
 
     public CompactDatePicker(Context context) {
@@ -33,7 +33,11 @@ public class CompactDatePicker extends LinearLayout {
         setupView();
     }
 
-    private void setListener(CompactCalendarView.CompactCalendarViewListener listener) {
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    public void setListener(CompactCalendarView.CompactCalendarViewListener listener) {
         this.listener = listener;
     }
 
@@ -44,11 +48,10 @@ public class CompactDatePicker extends LinearLayout {
         final TextView tvCompactDatePicker = (TextView) findViewById(R.id.tvCompactDatePicker);
         final CompactCalendarView vCompactDatePicker = (CompactCalendarView) findViewById(R.id.vCompactDatePicker);
 
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(vCompactDatePicker.getFirstDayOfCurrentMonth());
-        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
-        updateHeaderDate(tvCompactDatePicker, calendar.getTime());
+        final Calendar tmp = Calendar.getInstance();
+        tmp.setTime(vCompactDatePicker.getFirstDayOfCurrentMonth());
+        tmp.set(Calendar.MONTH, tmp.get(Calendar.MONTH) + 1);
+        updateHeaderDate(tvCompactDatePicker, tmp.getTime());
 
         btCompactDatePickerLeft.setOnClickListener(new OnClickListener() {
             @Override
@@ -73,16 +76,17 @@ public class CompactDatePicker extends LinearLayout {
         vCompactDatePicker.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
+                calendar.setTime(dateClicked);
                 if (listener != null) listener.onDayClick(dateClicked);
             }
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
-
-                Calendar calendar = Calendar.getInstance();
                 calendar.setTime(firstDayOfNewMonth);
-                calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
-                updateHeaderDate(tvCompactDatePicker, calendar.getTime());
+                Calendar tmp = Calendar.getInstance();
+                tmp.setTime(firstDayOfNewMonth);
+                tmp.set(Calendar.MONTH, tmp.get(Calendar.MONTH) + 1);
+                updateHeaderDate(tvCompactDatePicker, tmp.getTime());
                 if (listener != null) listener.onMonthScroll(firstDayOfNewMonth);
             }
         });

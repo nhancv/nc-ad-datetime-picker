@@ -46,11 +46,16 @@ public class WheelTimePicker extends LinearLayout {
             hourList.add(formatWithLeadingZero(2, String.valueOf(i)));
         }
         vHourTimePicker.setData(hourList);
-        vHourTimePicker.setSelectedItemPosition(hour - 1);
+        int position = hour - 1;
+        if (hour == 0) position = 11;
+        vHourTimePicker.setSelectedItemPosition(position);
+
         vHourTimePicker.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
             @Override
             public void onItemSelected(WheelPicker picker, Object data, int position) {
-                calendar.set(Calendar.HOUR, position);
+                int hour = position + 1;
+                if (position == 11) hour = 0;
+                calendar.set(Calendar.HOUR, hour);
             }
         });
 
