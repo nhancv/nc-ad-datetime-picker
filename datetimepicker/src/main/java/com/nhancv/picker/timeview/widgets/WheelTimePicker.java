@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
 import com.nhancv.picker.R;
-import com.nhancv.picker.timeview.WheelPicker;
+import com.nhancv.picker.timeview.NWheelPicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,9 +24,9 @@ import java.util.Locale;
 public class WheelTimePicker extends LinearLayout {
 
     private final Calendar calendar = Calendar.getInstance();
-    private WheelPicker hourTimePicker;
-    private WheelPicker minuteTimePicker;
-    private WheelPicker typeTimePicker;
+    private NWheelPicker hourTimePicker;
+    private NWheelPicker minuteTimePicker;
+    private NWheelPicker typeTimePicker;
 
     public WheelTimePicker(Context context) {
         this(context, null);
@@ -39,9 +39,9 @@ public class WheelTimePicker extends LinearLayout {
     }
 
     private void setupView() {
-        hourTimePicker = (WheelPicker) findViewById(R.id.vWheelHourTimePicker);
-        minuteTimePicker = (WheelPicker) findViewById(R.id.vWheelMinuteTimePicker);
-        typeTimePicker = (WheelPicker) findViewById(R.id.vWheelTypeTimePicker);
+        hourTimePicker = (NWheelPicker) findViewById(R.id.vWheelHourTimePicker);
+        minuteTimePicker = (NWheelPicker) findViewById(R.id.vWheelMinuteTimePicker);
+        typeTimePicker = (NWheelPicker) findViewById(R.id.vWheelTypeTimePicker);
 
         //hour list
         final List<String> hourList = new ArrayList<>();
@@ -61,23 +61,23 @@ public class WheelTimePicker extends LinearLayout {
 
         setTime(calendar);
 
-        hourTimePicker.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
+        hourTimePicker.setOnItemSelectedListener(new NWheelPicker.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(WheelPicker picker, Object data, int position) {
+            public void onItemSelected(NWheelPicker picker, Object data, int position) {
                 int hour = position + 1;
                 if (position == 11) hour = 0;
                 calendar.set(Calendar.HOUR, hour);
             }
         });
-        minuteTimePicker.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
+        minuteTimePicker.setOnItemSelectedListener(new NWheelPicker.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(WheelPicker picker, Object data, int position) {
+            public void onItemSelected(NWheelPicker picker, Object data, int position) {
                 calendar.set(Calendar.MINUTE, position);
             }
         });
-        typeTimePicker.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
+        typeTimePicker.setOnItemSelectedListener(new NWheelPicker.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(WheelPicker picker, Object data, int position) {
+            public void onItemSelected(NWheelPicker picker, Object data, int position) {
                 calendar.set(Calendar.AM_PM, position);
             }
         });
@@ -117,15 +117,15 @@ public class WheelTimePicker extends LinearLayout {
         typeTimePicker.setSelectedItemPosition(am);
     }
 
-    public WheelPicker getHourTimePicker() {
+    public NWheelPicker getHourTimePicker() {
         return hourTimePicker;
     }
 
-    public WheelPicker getMinuteTimePicker() {
+    public NWheelPicker getMinuteTimePicker() {
         return minuteTimePicker;
     }
 
-    public WheelPicker getTypeTimePicker() {
+    public NWheelPicker getTypeTimePicker() {
         return typeTimePicker;
     }
 

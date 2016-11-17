@@ -14,7 +14,7 @@ public interface IWheelPicker {
 
     void setCyclic(boolean isCyclic);
 
-    void setOnItemSelectedListener(WheelPicker.OnItemSelectedListener listener);
+    void setOnItemSelectedListener(NWheelPicker.OnItemSelectedListener listener);
 
     int getSelectedItemPosition();
 
@@ -30,7 +30,7 @@ public interface IWheelPicker {
 
     boolean hasSameWidth();
 
-    void setOnWheelChangeListener(WheelPicker.OnWheelChangeListener listener);
+    void setOnWheelChangeListener(NWheelPicker.OnWheelChangeListener listener);
 
     String getMaximumWidthText();
 

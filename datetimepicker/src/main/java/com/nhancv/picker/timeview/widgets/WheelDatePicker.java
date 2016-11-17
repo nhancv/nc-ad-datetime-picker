@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.nhancv.picker.R;
 import com.nhancv.picker.timeview.IDebug;
 import com.nhancv.picker.timeview.IWheelPicker;
-import com.nhancv.picker.timeview.WheelPicker;
+import com.nhancv.picker.timeview.NWheelPicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,15 +18,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class WheelDatePicker extends LinearLayout implements WheelPicker.OnItemSelectedListener,
+public class WheelDatePicker extends LinearLayout implements NWheelPicker.OnItemSelectedListener,
         IDebug, IWheelPicker, IWheelDatePicker, IWheelYearPicker, IWheelMonthPicker,
         IWheelDayPicker {
     private static final SimpleDateFormat SDF =
             new SimpleDateFormat("yyyy-M-d", Locale.getDefault());
 
-    private WheelYearPicker mPickerYear;
-    private WheelMonthPicker mPickerMonth;
-    private WheelDayPicker mPickerDay;
+    private NWheelYearPicker mPickerYear;
+    private NWheelMonthPicker mPickerMonth;
+    private NWheelDayPicker mPickerDay;
 
     private OnDateSelectedListener mListener;
 
@@ -43,9 +43,9 @@ public class WheelDatePicker extends LinearLayout implements WheelPicker.OnItemS
 
         LayoutInflater.from(context).inflate(R.layout.view_wheel_date_picker, this);
 
-        mPickerYear = (WheelYearPicker) findViewById(R.id.wheel_date_picker_year);
-        mPickerMonth = (WheelMonthPicker) findViewById(R.id.wheel_date_picker_month);
-        mPickerDay = (WheelDayPicker) findViewById(R.id.wheel_date_picker_day);
+        mPickerYear = (NWheelYearPicker) findViewById(R.id.wheel_date_picker_year);
+        mPickerMonth = (NWheelMonthPicker) findViewById(R.id.wheel_date_picker_month);
+        mPickerDay = (NWheelDayPicker) findViewById(R.id.wheel_date_picker_day);
         mPickerYear.setOnItemSelectedListener(this);
         mPickerMonth.setOnItemSelectedListener(this);
         mPickerDay.setOnItemSelectedListener(this);
@@ -73,7 +73,7 @@ public class WheelDatePicker extends LinearLayout implements WheelPicker.OnItemS
     }
 
     @Override
-    public void onItemSelected(WheelPicker picker, Object data, int position) {
+    public void onItemSelected(NWheelPicker picker, Object data, int position) {
         if (picker.getId() == R.id.wheel_date_picker_year) {
             mYear = (int) data;
             mPickerDay.setYear(mYear);
@@ -127,7 +127,7 @@ public class WheelDatePicker extends LinearLayout implements WheelPicker.OnItemS
 
     @Deprecated
     @Override
-    public void setOnItemSelectedListener(WheelPicker.OnItemSelectedListener listener) {
+    public void setOnItemSelectedListener(NWheelPicker.OnItemSelectedListener listener) {
         throw new UnsupportedOperationException("You can not set OnItemSelectedListener for" +
                 "WheelDatePicker");
     }
@@ -182,7 +182,7 @@ public class WheelDatePicker extends LinearLayout implements WheelPicker.OnItemS
 
     @Deprecated
     @Override
-    public void setOnWheelChangeListener(WheelPicker.OnWheelChangeListener listener) {
+    public void setOnWheelChangeListener(NWheelPicker.OnWheelChangeListener listener) {
         throw new UnsupportedOperationException("WheelDatePicker unsupport set" +
                 "OnWheelChangeListener");
     }
@@ -449,17 +449,17 @@ public class WheelDatePicker extends LinearLayout implements WheelPicker.OnItemS
     }
 
     @Override
-    public WheelYearPicker getWheelYearPicker() {
+    public NWheelYearPicker getWheelYearPicker() {
         return mPickerYear;
     }
 
     @Override
-    public WheelMonthPicker getWheelMonthPicker() {
+    public NWheelMonthPicker getWheelMonthPicker() {
         return mPickerMonth;
     }
 
     @Override
-    public WheelDayPicker getWheelDayPicker() {
+    public NWheelDayPicker getWheelDayPicker() {
         return mPickerDay;
     }
 

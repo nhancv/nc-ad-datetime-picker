@@ -21,11 +21,11 @@ public interface IWheelDatePicker {
 
     void setItemAlignDay(int align);
 
-    WheelYearPicker getWheelYearPicker();
+    NWheelYearPicker getWheelYearPicker();
 
-    WheelMonthPicker getWheelMonthPicker();
+    NWheelMonthPicker getWheelMonthPicker();
 
-    WheelDayPicker getWheelDayPicker();
+    NWheelDayPicker getWheelDayPicker();
 
     TextView getTextViewYear();
 

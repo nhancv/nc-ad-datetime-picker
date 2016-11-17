@@ -6,14 +6,14 @@ import android.view.animation.Transformation;
 
 class CollapsingAnimation extends Animation {
     private final int targetHeight;
-    private final CompactCalendarView view;
+    private final NCalendarView view;
     private final boolean down;
     private int targetGrowRadius;
-    private CompactCalendarController compactCalendarController;
+    private NCalendarController nCalendarController;
 
-    public CollapsingAnimation(CompactCalendarView view, CompactCalendarController compactCalendarController, int targetHeight, int targetGrowRadius, boolean down) {
+    public CollapsingAnimation(NCalendarView view, NCalendarController nCalendarController, int targetHeight, int targetGrowRadius, boolean down) {
         this.view = view;
-        this.compactCalendarController = compactCalendarController;
+        this.nCalendarController = nCalendarController;
         this.targetHeight = targetHeight;
         this.targetGrowRadius = targetGrowRadius;
         this.down = down;
@@ -31,7 +31,7 @@ class CollapsingAnimation extends Animation {
             newHeight = (int) (targetHeight * progress);
             grow = (progress * (targetGrowRadius * 2));
         }
-        compactCalendarController.setGrowProgress(grow);
+        nCalendarController.setGrowProgress(grow);
         view.getLayoutParams().height = newHeight;
         view.requestLayout();
 

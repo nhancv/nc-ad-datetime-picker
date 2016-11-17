@@ -7,7 +7,7 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
-    <com.nhancv.picker.dateview.CompactDatePicker
+    <com.nhancv.picker.dateview.NDatePicker
         android:id="@+id/vDatePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

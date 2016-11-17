@@ -10,7 +10,7 @@
     android:background="@drawable/wheel_datetime_picker_background"
     android:orientation="horizontal">
 
-    <com.nhancv.picker.timeview.WheelPicker
+    <com.nhancv.picker.timeview.NWheelPicker
         android:id="@+id/vWheelHourTimePicker"
         android:layout_width="70dp"
         android:layout_height="match_parent"
@@ -26,7 +26,7 @@
         app:wheel_selected_item_text_color="#fffff0"
         />
 
-    <com.nhancv.picker.timeview.WheelPicker
+    <com.nhancv.picker.timeview.NWheelPicker
         android:id="@+id/vWheelMinuteTimePicker"
         android:layout_width="120dp"
         android:layout_height="match_parent"
@@ -42,7 +42,7 @@
         app:wheel_selected_item_text_color="#fffff0"
         />
 
-    <com.nhancv.picker.timeview.WheelPicker
+    <com.nhancv.picker.timeview.NWheelPicker
         android:id="@+id/vWheelTypeTimePicker"
         android:layout_width="80dp"
         android:layout_height="match_parent"

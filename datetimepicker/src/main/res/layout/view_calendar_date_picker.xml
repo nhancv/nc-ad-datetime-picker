@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="250dp">
 
-        <com.nhancv.picker.dateview.CompactCalendarView
+        <com.nhancv.picker.dateview.NCalendarView
             android:id="@+id/vCompactDatePicker"
             android:layout_width="match_parent"
             android:layout_height="250dp"

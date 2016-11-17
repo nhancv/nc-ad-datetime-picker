@@ -3,7 +3,7 @@ package com.nhancv.picker.timeview.widgets;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.nhancv.picker.timeview.WheelPicker;
+import com.nhancv.picker.timeview.NWheelPicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WheelDayPicker extends WheelPicker implements IWheelDayPicker {
+public class NWheelDayPicker extends NWheelPicker implements IWheelDayPicker {
     private static final Map<Integer, List<Integer>> DAYS = new HashMap<>();
 
     private Calendar mCalendar;
@@ -19,11 +19,11 @@ public class WheelDayPicker extends WheelPicker implements IWheelDayPicker {
     private int mYear, mMonth;
     private int mSelectedDay;
 
-    public WheelDayPicker(Context context) {
+    public NWheelDayPicker(Context context) {
         this(context, null);
     }
 
-    public WheelDayPicker(Context context, AttributeSet attrs) {
+    public NWheelDayPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mCalendar = Calendar.getInstance();

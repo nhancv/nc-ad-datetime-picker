@@ -3,21 +3,21 @@ package com.nhancv.picker.timeview.widgets;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.nhancv.picker.timeview.WheelPicker;
+import com.nhancv.picker.timeview.NWheelPicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class WheelYearPicker extends WheelPicker implements IWheelYearPicker {
+public class NWheelYearPicker extends NWheelPicker implements IWheelYearPicker {
     private int mYearStart = 1000, mYearEnd = 3000;
     private int mSelectedYear;
 
-    public WheelYearPicker(Context context) {
+    public NWheelYearPicker(Context context) {
         this(context, null);
     }
 
-    public WheelYearPicker(Context context, AttributeSet attrs) {
+    public NWheelYearPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         updateYears();

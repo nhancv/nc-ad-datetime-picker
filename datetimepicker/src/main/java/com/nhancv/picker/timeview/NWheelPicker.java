@@ -25,13 +25,13 @@ import com.nhancv.picker.R;
 import java.util.Arrays;
 import java.util.List;
 
-public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable {
+public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable {
     public static final int SCROLL_STATE_IDLE = 0, SCROLL_STATE_DRAGGING = 1,
             SCROLL_STATE_SCROLLING = 2;
 
     public static final int ALIGN_CENTER = 0, ALIGN_LEFT = 1, ALIGN_RIGHT = 2;
 
-    private static final String TAG = WheelPicker.class.getSimpleName();
+    private static final String TAG = NWheelPicker.class.getSimpleName();
 
     private final Handler mHandler = new Handler();
 
@@ -120,41 +120,41 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
 
     private boolean isDebug;
 
-    public WheelPicker(Context context) {
+    public NWheelPicker(Context context) {
         this(context, null);
     }
 
-    public WheelPicker(Context context, AttributeSet attrs) {
+    public NWheelPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelPicker);
-        int idData = a.getResourceId(R.styleable.WheelPicker_wheel_data, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NWheelPicker);
+        int idData = a.getResourceId(R.styleable.NWheelPicker_wheel_data, 0);
         mData = Arrays.asList(getResources()
                 .getStringArray(idData == 0 ? R.array.WheelArrayDefault : idData));
-        mItemTextSize = a.getDimensionPixelSize(R.styleable.WheelPicker_wheel_item_text_size,
+        mItemTextSize = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_item_text_size,
                 getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
-        mVisibleItemCount = a.getInt(R.styleable.WheelPicker_wheel_visible_item_count, 7);
-        mSelectedItemPosition = a.getInt(R.styleable.WheelPicker_wheel_selected_item_position, 0);
-        hasSameWidth = a.getBoolean(R.styleable.WheelPicker_wheel_same_width, false);
+        mVisibleItemCount = a.getInt(R.styleable.NWheelPicker_wheel_visible_item_count, 7);
+        mSelectedItemPosition = a.getInt(R.styleable.NWheelPicker_wheel_selected_item_position, 0);
+        hasSameWidth = a.getBoolean(R.styleable.NWheelPicker_wheel_same_width, false);
         mTextMaxWidthPosition =
-                a.getInt(R.styleable.WheelPicker_wheel_maximum_width_text_position, -1);
-        mMaxWidthText = a.getString(R.styleable.WheelPicker_wheel_maximum_width_text);
+                a.getInt(R.styleable.NWheelPicker_wheel_maximum_width_text_position, -1);
+        mMaxWidthText = a.getString(R.styleable.NWheelPicker_wheel_maximum_width_text);
         mSelectedItemTextColor = a.getColor
-                (R.styleable.WheelPicker_wheel_selected_item_text_color, -1);
-        mItemTextColor = a.getColor(R.styleable.WheelPicker_wheel_item_text_color, 0xFF888888);
-        mItemSpace = a.getDimensionPixelSize(R.styleable.WheelPicker_wheel_item_space,
+                (R.styleable.NWheelPicker_wheel_selected_item_text_color, -1);
+        mItemTextColor = a.getColor(R.styleable.NWheelPicker_wheel_item_text_color, 0xFF888888);
+        mItemSpace = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_item_space,
                 getResources().getDimensionPixelSize(R.dimen.WheelItemSpace));
-        isCyclic = a.getBoolean(R.styleable.WheelPicker_wheel_cyclic, false);
-        hasIndicator = a.getBoolean(R.styleable.WheelPicker_wheel_indicator, false);
-        mIndicatorColor = a.getColor(R.styleable.WheelPicker_wheel_indicator_color, 0xFFEE3333);
-        mIndicatorSize = a.getDimensionPixelSize(R.styleable.WheelPicker_wheel_indicator_size,
+        isCyclic = a.getBoolean(R.styleable.NWheelPicker_wheel_cyclic, false);
+        hasIndicator = a.getBoolean(R.styleable.NWheelPicker_wheel_indicator, false);
+        mIndicatorColor = a.getColor(R.styleable.NWheelPicker_wheel_indicator_color, 0xFFEE3333);
+        mIndicatorSize = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_indicator_size,
                 getResources().getDimensionPixelSize(R.dimen.WheelIndicatorSize));
-        hasCurtain = a.getBoolean(R.styleable.WheelPicker_wheel_curtain, false);
-        mCurtainColor = a.getColor(R.styleable.WheelPicker_wheel_curtain_color, 0x88FFFFFF);
-        hasAtmospheric = a.getBoolean(R.styleable.WheelPicker_wheel_atmospheric, false);
-        isCurved = a.getBoolean(R.styleable.WheelPicker_wheel_curved, false);
-        mItemAlign = a.getInt(R.styleable.WheelPicker_wheel_item_align, ALIGN_CENTER);
-        curtainPadding = a.getDimensionPixelSize(R.styleable.WheelPicker_wheel_curtain_padding, 0);
+        hasCurtain = a.getBoolean(R.styleable.NWheelPicker_wheel_curtain, false);
+        mCurtainColor = a.getColor(R.styleable.NWheelPicker_wheel_curtain_color, 0x88FFFFFF);
+        hasAtmospheric = a.getBoolean(R.styleable.NWheelPicker_wheel_atmospheric, false);
+        isCurved = a.getBoolean(R.styleable.NWheelPicker_wheel_curved, false);
+        mItemAlign = a.getInt(R.styleable.NWheelPicker_wheel_item_align, ALIGN_CENTER);
+        curtainPadding = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_curtain_padding, 0);
         a.recycle();
 
         // Update relevant parameters when the count of visible item changed
@@ -924,7 +924,7 @@ public class WheelPicker extends View implements IDebug, IWheelPicker, Runnable 
     }
 
     public interface OnItemSelectedListener {
-        void onItemSelected(WheelPicker picker, Object data, int position);
+        void onItemSelected(NWheelPicker picker, Object data, int position);
     }
 
     public interface OnWheelChangeListener {

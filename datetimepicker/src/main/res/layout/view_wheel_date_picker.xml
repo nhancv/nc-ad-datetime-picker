@@ -5,7 +5,7 @@
               android:gravity="center"
               android:orientation="horizontal">
 
-    <com.nhancv.picker.timeview.widgets.WheelYearPicker
+    <com.nhancv.picker.timeview.widgets.NWheelYearPicker
         android:id="@+id/wheel_date_picker_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -19,7 +19,7 @@
         android:text="@string/Year"
         android:textColor="#536D8A"/>
 
-    <com.nhancv.picker.timeview.widgets.WheelMonthPicker
+    <com.nhancv.picker.timeview.widgets.NWheelMonthPicker
         android:id="@+id/wheel_date_picker_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -33,7 +33,7 @@
         android:text="@string/Month"
         android:textColor="#536D8A"/>
 
-    <com.nhancv.picker.timeview.widgets.WheelDayPicker
+    <com.nhancv.picker.timeview.widgets.NWheelDayPicker
         android:id="@+id/wheel_date_picker_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

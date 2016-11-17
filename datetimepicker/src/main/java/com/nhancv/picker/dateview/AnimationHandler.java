@@ -12,48 +12,48 @@ class AnimationHandler {
 
     public static final int HEIGHT_ANIM_DURATION_MILLIS = 650;
     public static final int INDICATOR_ANIM_DURATION_MILLIS = 600;
-    private CompactCalendarController compactCalendarController;
-    private CompactCalendarView compactCalendarView;
+    private NCalendarController nCalendarController;
+    private NCalendarView calendarView;
 
-    AnimationHandler(CompactCalendarController compactCalendarController, CompactCalendarView compactCalendarView) {
-        this.compactCalendarController = compactCalendarController;
-        this.compactCalendarView = compactCalendarView;
+    AnimationHandler(NCalendarController nCalendarController, NCalendarView calendarView) {
+        this.nCalendarController = nCalendarController;
+        this.calendarView = calendarView;
     }
 
     void openCalendar() {
         Animation heightAnim = getCollapsingAnimation(true);
         heightAnim.setDuration(HEIGHT_ANIM_DURATION_MILLIS);
         heightAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        compactCalendarController.setAnimationStatus(CompactCalendarController.EXPAND_COLLAPSE_CALENDAR);
-        compactCalendarView.getLayoutParams().height = 0;
-        compactCalendarView.requestLayout();
-        compactCalendarView.startAnimation(heightAnim);
+        nCalendarController.setAnimationStatus(NCalendarController.EXPAND_COLLAPSE_CALENDAR);
+        calendarView.getLayoutParams().height = 0;
+        calendarView.requestLayout();
+        calendarView.startAnimation(heightAnim);
     }
 
     void closeCalendar() {
         Animation heightAnim = getCollapsingAnimation(false);
         heightAnim.setDuration(HEIGHT_ANIM_DURATION_MILLIS);
         heightAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        compactCalendarController.setAnimationStatus(CompactCalendarController.EXPAND_COLLAPSE_CALENDAR);
-        compactCalendarView.getLayoutParams().height = compactCalendarView.getHeight();
-        compactCalendarView.requestLayout();
-        compactCalendarView.startAnimation(heightAnim);
+        nCalendarController.setAnimationStatus(NCalendarController.EXPAND_COLLAPSE_CALENDAR);
+        calendarView.getLayoutParams().height = calendarView.getHeight();
+        calendarView.requestLayout();
+        calendarView.startAnimation(heightAnim);
     }
 
     void openCalendarWithAnimation() {
-        final Animator indicatorAnim = getIndicatorAnimator(1f, compactCalendarController.getDayIndicatorRadius());
+        final Animator indicatorAnim = getIndicatorAnimator(1f, nCalendarController.getDayIndicatorRadius());
         final Animation heightAnim = getExposeCollapsingAnimation(true);
-        compactCalendarView.getLayoutParams().height = 0;
-        compactCalendarView.requestLayout();
+        calendarView.getLayoutParams().height = 0;
+        calendarView.requestLayout();
         setUpAnimationLisForExposeOpen(indicatorAnim, heightAnim);
-        compactCalendarView.startAnimation(heightAnim);
+        calendarView.startAnimation(heightAnim);
     }
 
     private void setUpAnimationLisForExposeOpen(final Animator indicatorAnim, Animation heightAnim) {
         heightAnim.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                compactCalendarController.setAnimationStatus(CompactCalendarController.EXPOSE_CALENDAR_ANIMATION);
+                nCalendarController.setAnimationStatus(NCalendarController.EXPOSE_CALENDAR_ANIMATION);
             }
 
             @Override
@@ -64,42 +64,42 @@ class AnimationHandler {
         indicatorAnim.addListener(new AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                compactCalendarController.setAnimationStatus(CompactCalendarController.ANIMATE_INDICATORS);
+                nCalendarController.setAnimationStatus(NCalendarController.ANIMATE_INDICATORS);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                compactCalendarController.setAnimationStatus(CompactCalendarController.IDLE);
+                nCalendarController.setAnimationStatus(NCalendarController.IDLE);
             }
         });
     }
 
     void closeCalendarWithAnimation() {
-        final Animator indicatorAnim = getIndicatorAnimator(compactCalendarController.getDayIndicatorRadius(), 1f);
+        final Animator indicatorAnim = getIndicatorAnimator(nCalendarController.getDayIndicatorRadius(), 1f);
         final Animation heightAnim = getExposeCollapsingAnimation(false);
-        compactCalendarView.getLayoutParams().height = compactCalendarView.getHeight();
-        compactCalendarView.requestLayout();
+        calendarView.getLayoutParams().height = calendarView.getHeight();
+        calendarView.requestLayout();
         setUpAnimationLisForExposeClose(indicatorAnim, heightAnim);
-        compactCalendarView.startAnimation(heightAnim);
+        calendarView.startAnimation(heightAnim);
     }
 
     private void setUpAnimationLisForExposeClose(final Animator indicatorAnim, Animation heightAnim) {
         heightAnim.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                compactCalendarController.setAnimationStatus(CompactCalendarController.EXPOSE_CALENDAR_ANIMATION);
+                nCalendarController.setAnimationStatus(NCalendarController.EXPOSE_CALENDAR_ANIMATION);
                 indicatorAnim.start();
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                compactCalendarController.setAnimationStatus(CompactCalendarController.IDLE);
+                nCalendarController.setAnimationStatus(NCalendarController.IDLE);
             }
         });
         indicatorAnim.addListener(new AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                compactCalendarController.setAnimationStatus(CompactCalendarController.ANIMATE_INDICATORS);
+                nCalendarController.setAnimationStatus(NCalendarController.ANIMATE_INDICATORS);
             }
         });
     }
@@ -114,7 +114,7 @@ class AnimationHandler {
 
     @NonNull
     private Animation getCollapsingAnimation(boolean isCollapsing) {
-        return new CollapsingAnimation(compactCalendarView, compactCalendarController, compactCalendarController.getTargetHeight(), getTargetGrowRadius(), isCollapsing);
+        return new CollapsingAnimation(calendarView, nCalendarController, nCalendarController.getTargetHeight(), getTargetGrowRadius(), isCollapsing);
     }
 
     @NonNull
@@ -125,16 +125,16 @@ class AnimationHandler {
         animIndicator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                compactCalendarController.setGrowFactorIndicator((Float) animation.getAnimatedValue());
-                compactCalendarView.invalidate();
+                nCalendarController.setGrowFactorIndicator((Float) animation.getAnimatedValue());
+                calendarView.invalidate();
             }
         });
         return animIndicator;
     }
 
     private int getTargetGrowRadius() {
-        int heightSq = compactCalendarController.getTargetHeight() * compactCalendarController.getTargetHeight();
-        int widthSq = compactCalendarController.getWidth() * compactCalendarController.getWidth();
+        int heightSq = nCalendarController.getTargetHeight() * nCalendarController.getTargetHeight();
+        int widthSq = nCalendarController.getWidth() * nCalendarController.getWidth();
         return (int) (0.5 * Math.sqrt(heightSq + widthSq));
     }
 }

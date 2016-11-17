@@ -27,13 +27,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.nhancv.picker.dateview.CompactCalendarView.FILL_LARGE_INDICATOR;
-import static com.nhancv.picker.dateview.CompactCalendarView.NO_FILL_LARGE_INDICATOR;
-import static com.nhancv.picker.dateview.CompactCalendarView.SMALL_INDICATOR;
-import static java.security.AccessController.getContext;
+import static com.nhancv.picker.dateview.NCalendarView.FILL_LARGE_INDICATOR;
+import static com.nhancv.picker.dateview.NCalendarView.NO_FILL_LARGE_INDICATOR;
+import static com.nhancv.picker.dateview.NCalendarView.SMALL_INDICATOR;
 
 
-class CompactCalendarController {
+class NCalendarController {
 
     public static final int IDLE = 0;
     public static final int EXPOSE_CALENDAR_ANIMATION = 1;
@@ -82,7 +81,7 @@ class CompactCalendarController {
     private boolean shouldDrawDaysHeader = true;
     private boolean shouldDrawIndicatorsBelowSelectedDays = false;
 
-    private CompactCalendarView.CompactCalendarViewListener listener;
+    private NCalendarView.CompactCalendarViewListener listener;
     private VelocityTracker velocityTracker = null;
     private Direction currentDirection = Direction.NONE;
     private Date currentDate = new Date();
@@ -110,11 +109,11 @@ class CompactCalendarController {
     private int calenderBackgroundColor = Color.WHITE;
     private TimeZone timeZone;
 
-    CompactCalendarController(Paint dayPaint, OverScroller scroller, Rect textSizeRect, AttributeSet attrs,
-                              Context context, int currentDayBackgroundColor, int calenderTextColor,
-                              int currentSelectedDayBackgroundColor, VelocityTracker velocityTracker,
-                              int multiEventIndicatorColor, EventsContainer eventsContainer,
-                              Locale locale, TimeZone timeZone) {
+    NCalendarController(Paint dayPaint, OverScroller scroller, Rect textSizeRect, AttributeSet attrs,
+                        Context context, int currentDayBackgroundColor, int calenderTextColor,
+                        int currentSelectedDayBackgroundColor, VelocityTracker velocityTracker,
+                        int multiEventIndicatorColor, EventsContainer eventsContainer,
+                        Locale locale, TimeZone timeZone) {
         this.dayPaint = dayPaint;
         this.scroller = scroller;
         this.textSizeRect = textSizeRect;
@@ -133,21 +132,21 @@ class CompactCalendarController {
 
     private void loadAttributes(AttributeSet attrs, Context context) {
         if (attrs != null && context != null) {
-            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CompactCalendarView, 0, 0);
+            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.NCalendarView, 0, 0);
             try {
-                currentDayBackgroundColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarCurrentDayBackgroundColor, currentDayBackgroundColor);
-                calenderTextColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarTextColor, calenderTextColor);
-                calenderHeaderTextColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarHeaderTextColor, calenderHeaderTextColor);
-                currentSelectedDayBackgroundColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarCurrentSelectedDayBackgroundColor, currentSelectedDayBackgroundColor);
-                calenderBackgroundColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarBackgroundColor, calenderBackgroundColor);
-                multiEventIndicatorColor = typedArray.getColor(R.styleable.CompactCalendarView_compactCalendarMultiEventIndicatorColor, multiEventIndicatorColor);
-                textSize = typedArray.getDimensionPixelSize(R.styleable.CompactCalendarView_compactCalendarTextSize,
+                currentDayBackgroundColor = typedArray.getColor(R.styleable.NCalendarView_compactCalendarCurrentDayBackgroundColor, currentDayBackgroundColor);
+                calenderTextColor = typedArray.getColor(R.styleable.NCalendarView_compactCalendarTextColor, calenderTextColor);
+                calenderHeaderTextColor = typedArray.getColor(R.styleable.NCalendarView_compactCalendarHeaderTextColor, calenderHeaderTextColor);
+                currentSelectedDayBackgroundColor = typedArray.getColor(R.styleable.NCalendarView_compactCalendarCurrentSelectedDayBackgroundColor, currentSelectedDayBackgroundColor);
+                calenderBackgroundColor = typedArray.getColor(R.styleable.NCalendarView_compactCalendarBackgroundColor, calenderBackgroundColor);
+                multiEventIndicatorColor = typedArray.getColor(R.styleable.NCalendarView_compactCalendarMultiEventIndicatorColor, multiEventIndicatorColor);
+                textSize = typedArray.getDimensionPixelSize(R.styleable.NCalendarView_compactCalendarTextSize,
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, context.getResources().getDisplayMetrics()));
-                targetHeight = typedArray.getDimensionPixelSize(R.styleable.CompactCalendarView_compactCalendarTargetHeight,
+                targetHeight = typedArray.getDimensionPixelSize(R.styleable.NCalendarView_compactCalendarTargetHeight,
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, targetHeight, context.getResources().getDisplayMetrics()));
-                eventIndicatorStyle = typedArray.getInt(R.styleable.CompactCalendarView_compactCalendarEventIndicatorStyle, SMALL_INDICATOR);
-                currentDayIndicatorStyle = typedArray.getInt(R.styleable.CompactCalendarView_compactCalendarCurrentDayIndicatorStyle, FILL_LARGE_INDICATOR);
-                currentSelectedDayIndicatorStyle = typedArray.getInt(R.styleable.CompactCalendarView_compactCalendarCurrentSelectedDayIndicatorStyle, FILL_LARGE_INDICATOR);
+                eventIndicatorStyle = typedArray.getInt(R.styleable.NCalendarView_compactCalendarEventIndicatorStyle, SMALL_INDICATOR);
+                currentDayIndicatorStyle = typedArray.getInt(R.styleable.NCalendarView_compactCalendarCurrentDayIndicatorStyle, FILL_LARGE_INDICATOR);
+                currentSelectedDayIndicatorStyle = typedArray.getInt(R.styleable.NCalendarView_compactCalendarCurrentSelectedDayIndicatorStyle, FILL_LARGE_INDICATOR);
             } finally {
                 typedArray.recycle();
             }
@@ -278,7 +277,7 @@ class CompactCalendarController {
         return width;
     }
 
-    void setListener(CompactCalendarView.CompactCalendarViewListener listener) {
+    void setListener(NCalendarView.CompactCalendarViewListener listener) {
         this.listener = listener;
     }
 

@@ -21,19 +21,19 @@ import java.util.TimeZone;
  * Created by nhancao on 11/13/16.
  */
 
-public class CompactDatePicker extends LinearLayout {
+public class NDatePicker extends LinearLayout {
     private final Calendar calendar = Calendar.getInstance();
-    private CompactCalendarView.CompactCalendarViewListener listener;
+    private NCalendarView.CompactCalendarViewListener listener;
     private ImageView btCompactDatePickerLeft;
     private ImageView btCompactDatePickerRight;
     private TextView tvCompactDatePicker;
-    private CompactCalendarView vCompactDatePicker;
+    private NCalendarView vCompactDatePicker;
 
-    public CompactDatePicker(Context context) {
+    public NDatePicker(Context context) {
         this(context, null);
     }
 
-    public CompactDatePicker(Context context, AttributeSet attrs) {
+    public NDatePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.view_calendar_date_picker, this);
         setupView();
@@ -43,7 +43,7 @@ public class CompactDatePicker extends LinearLayout {
         return calendar;
     }
 
-    public void setListener(CompactCalendarView.CompactCalendarViewListener listener) {
+    public void setListener(NCalendarView.CompactCalendarViewListener listener) {
         this.listener = listener;
     }
 
@@ -59,7 +59,7 @@ public class CompactDatePicker extends LinearLayout {
 
     public void setDate(Date date) {
         updateHeaderDate(date);
-        CompactCalendarView vCompactDatePicker = getCalendarView();
+        NCalendarView vCompactDatePicker = getCalendarView();
         vCompactDatePicker.setCurrentDate(date);
     }
 
@@ -74,7 +74,7 @@ public class CompactDatePicker extends LinearLayout {
         btCompactDatePickerLeft = (ImageView) findViewById(R.id.btCompactDatePickerLeft);
         btCompactDatePickerRight = (ImageView) findViewById(R.id.btCompactDatePickerRight);
         tvCompactDatePicker = (TextView) findViewById(R.id.tvCompactDatePicker);
-        vCompactDatePicker = (CompactCalendarView) findViewById(R.id.vCompactDatePicker);
+        vCompactDatePicker = (NCalendarView) findViewById(R.id.vCompactDatePicker);
 
         final Calendar tmp = Calendar.getInstance();
         tmp.setTime(vCompactDatePicker.getFirstDayOfCurrentMonth());
@@ -101,7 +101,7 @@ public class CompactDatePicker extends LinearLayout {
                 updateHeaderDate(current);
             }
         });
-        vCompactDatePicker.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+        vCompactDatePicker.setListener(new NCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
                 calendar.setTime(dateClicked);
@@ -132,8 +132,8 @@ public class CompactDatePicker extends LinearLayout {
         return btCompactDatePickerLeft;
     }
 
-    public CompactCalendarView getCalendarView() {
-        return (CompactCalendarView) findViewById(R.id.vCompactDatePicker);
+    public NCalendarView getCalendarView() {
+        return (NCalendarView) findViewById(R.id.vCompactDatePicker);
     }
 
     public void updateHeaderDate(Date updateDate) {

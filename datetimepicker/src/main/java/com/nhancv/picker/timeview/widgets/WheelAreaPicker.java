@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.nhancv.picker.timeview.WheelPicker;
+import com.nhancv.picker.timeview.NWheelPicker;
 import com.nhancv.picker.timeview.model.City;
 import com.nhancv.picker.timeview.model.Province;
 
@@ -31,7 +31,7 @@ public class WheelAreaPicker extends LinearLayout implements IWheelAreaPicker {
 
     private LayoutParams mLayoutParams;
 
-    private WheelPicker mWPProvince, mWPCity, mWPArea;
+    private NWheelPicker mWPProvince, mWPCity, mWPArea;
 
     public WheelAreaPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -77,16 +77,16 @@ public class WheelAreaPicker extends LinearLayout implements IWheelAreaPicker {
         mProvinceName = new ArrayList<>();
         mCityName = new ArrayList<>();
 
-        mWPProvince = new WheelPicker(context);
-        mWPCity = new WheelPicker(context);
-        mWPArea = new WheelPicker(context);
+        mWPProvince = new NWheelPicker(context);
+        mWPCity = new NWheelPicker(context);
+        mWPArea = new NWheelPicker(context);
 
         initWheelPicker(mWPProvince, 1);
         initWheelPicker(mWPCity, 1.5f);
         initWheelPicker(mWPArea, 1.5f);
     }
 
-    private void initWheelPicker(WheelPicker wheelPicker, float weight) {
+    private void initWheelPicker(NWheelPicker wheelPicker, float weight) {
         mLayoutParams.weight = weight;
         wheelPicker.setItemTextSize(dip2px(mContext, ITEM_TEXT_SIZE));
         wheelPicker.setSelectedItemTextColor(Color.parseColor(SELECTED_ITEM_COLOR));
@@ -104,17 +104,17 @@ public class WheelAreaPicker extends LinearLayout implements IWheelAreaPicker {
     }
 
     private void addListenerToWheelPicker() {
-        mWPProvince.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
+        mWPProvince.setOnItemSelectedListener(new NWheelPicker.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(WheelPicker picker, Object data, int position) {
+            public void onItemSelected(NWheelPicker picker, Object data, int position) {
                 mCityList = mProvinceList.get(position).getCity();
                 setCityAndAreaData(position);
             }
         });
 
-        mWPCity.setOnItemSelectedListener(new WheelPicker.OnItemSelectedListener() {
+        mWPCity.setOnItemSelectedListener(new NWheelPicker.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(WheelPicker picker, Object data, int position) {
+            public void onItemSelected(NWheelPicker picker, Object data, int position) {
                 mWPArea.setData(mCityList.get(position).getArea());
             }
         });

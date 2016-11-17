@@ -3,20 +3,20 @@ package com.nhancv.picker.timeview.widgets;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.nhancv.picker.timeview.WheelPicker;
+import com.nhancv.picker.timeview.NWheelPicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class WheelMonthPicker extends WheelPicker implements IWheelMonthPicker {
+public class NWheelMonthPicker extends NWheelPicker implements IWheelMonthPicker {
     private int mSelectedMonth;
 
-    public WheelMonthPicker(Context context) {
+    public NWheelMonthPicker(Context context) {
         this(context, null);
     }
 
-    public WheelMonthPicker(Context context, AttributeSet attrs) {
+    public NWheelMonthPicker(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         List<Integer> data = new ArrayList<>();
