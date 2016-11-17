@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Created by nhancao on 11/13/16.
@@ -139,7 +138,6 @@ public class NDatePicker extends LinearLayout {
     public void updateHeaderDate(Date updateDate) {
         TextView tvCompactDatePicker = (TextView) findViewById(R.id.tvCompactDatePicker);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         tvCompactDatePicker.setText(simpleDateFormat.format(updateDate));
     }
 

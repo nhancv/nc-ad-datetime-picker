@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         btSetTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String time = "14/01/2016 00:55";
+                String time = "14/01/2016 20:55";
                 String format = "dd/MM/yyyy hh:mm";
                 vDatePicker.setDate(time, format);
                 vTimePicker.setTime(time, format);
