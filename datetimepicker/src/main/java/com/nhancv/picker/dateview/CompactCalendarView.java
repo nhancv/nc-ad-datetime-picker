@@ -396,9 +396,9 @@ public class CompactCalendarView extends View {
     }
 
     public interface CompactCalendarViewListener {
-        public void onDayClick(Date dateClicked);
+        void onDayClick(Date dateClicked);
 
-        public void onMonthScroll(Date firstDayOfNewMonth);
+        void onMonthScroll(Date firstDayOfNewMonth);
     }
 
 }

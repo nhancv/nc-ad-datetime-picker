@@ -4,11 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nhancv.picker.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +24,10 @@ import java.util.TimeZone;
 public class CompactDatePicker extends LinearLayout {
     private final Calendar calendar = Calendar.getInstance();
     private CompactCalendarView.CompactCalendarViewListener listener;
+    private ImageView btCompactDatePickerLeft;
+    private ImageView btCompactDatePickerRight;
+    private TextView tvCompactDatePicker;
+    private CompactCalendarView vCompactDatePicker;
 
     public CompactDatePicker(Context context) {
         this(context, null);
@@ -41,17 +47,39 @@ public class CompactDatePicker extends LinearLayout {
         this.listener = listener;
     }
 
+    public Date parseDate(String inputDate, String formatDate) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat(formatDate, Locale.US);
+            return format.parse(inputDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void setDate(Date date) {
+        updateHeaderDate(date);
+        CompactCalendarView vCompactDatePicker = getCalendarView();
+        vCompactDatePicker.setCurrentDate(date);
+    }
+
+    public void setDate(String inputDate, String formatDate) {
+        Date date = parseDate(inputDate, formatDate);
+        if (date == null) return;
+        setDate(date);
+    }
+
     private void setupView() {
 
-        final View btCompactDatePickerLeft = findViewById(R.id.btCompactDatePickerLeft);
-        final View btCompactDatePickerRight = findViewById(R.id.btCompactDatePickerRight);
-        final TextView tvCompactDatePicker = (TextView) findViewById(R.id.tvCompactDatePicker);
-        final CompactCalendarView vCompactDatePicker = (CompactCalendarView) findViewById(R.id.vCompactDatePicker);
+        btCompactDatePickerLeft = (ImageView) findViewById(R.id.btCompactDatePickerLeft);
+        btCompactDatePickerRight = (ImageView) findViewById(R.id.btCompactDatePickerRight);
+        tvCompactDatePicker = (TextView) findViewById(R.id.tvCompactDatePicker);
+        vCompactDatePicker = (CompactCalendarView) findViewById(R.id.vCompactDatePicker);
 
         final Calendar tmp = Calendar.getInstance();
         tmp.setTime(vCompactDatePicker.getFirstDayOfCurrentMonth());
         tmp.set(Calendar.MONTH, tmp.get(Calendar.MONTH) + 1);
-        updateHeaderDate(tvCompactDatePicker, tmp.getTime());
+        updateHeaderDate(tmp.getTime());
 
         btCompactDatePickerLeft.setOnClickListener(new OnClickListener() {
             @Override
@@ -70,7 +98,7 @@ public class CompactDatePicker extends LinearLayout {
             public void onClick(View view) {
                 Date current = Calendar.getInstance().getTime();
                 vCompactDatePicker.setCurrentDate(current);
-                updateHeaderDate(tvCompactDatePicker, current);
+                updateHeaderDate(current);
             }
         });
         vCompactDatePicker.setListener(new CompactCalendarView.CompactCalendarViewListener() {
@@ -86,13 +114,30 @@ public class CompactDatePicker extends LinearLayout {
                 Calendar tmp = Calendar.getInstance();
                 tmp.setTime(firstDayOfNewMonth);
                 tmp.set(Calendar.MONTH, tmp.get(Calendar.MONTH) + 1);
-                updateHeaderDate(tvCompactDatePicker, tmp.getTime());
+                updateHeaderDate(tmp.getTime());
                 if (listener != null) listener.onMonthScroll(firstDayOfNewMonth);
             }
         });
     }
 
-    private void updateHeaderDate(TextView tvCompactDatePicker, Date updateDate) {
+    public TextView getHeaderDatePicker() {
+        return tvCompactDatePicker;
+    }
+
+    public ImageView getHeaderDatePickerRight() {
+        return btCompactDatePickerRight;
+    }
+
+    public ImageView getHeaderDatePickerLeft() {
+        return btCompactDatePickerLeft;
+    }
+
+    public CompactCalendarView getCalendarView() {
+        return (CompactCalendarView) findViewById(R.id.vCompactDatePicker);
+    }
+
+    public void updateHeaderDate(Date updateDate) {
+        TextView tvCompactDatePicker = (TextView) findViewById(R.id.tvCompactDatePicker);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         tvCompactDatePicker.setText(simpleDateFormat.format(updateDate));

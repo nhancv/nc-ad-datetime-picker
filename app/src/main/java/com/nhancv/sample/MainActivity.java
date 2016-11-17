@@ -28,8 +28,23 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.e(TAG, "onClick: vDate: " + new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(vDatePicker.getCalendar().getTime()));
                 Log.e(TAG, "onClick vTime: " + new SimpleDateFormat("hh:mm:ss a", Locale.US).format(vTimePicker.getCalendar().getTime()));
+                Log.e(TAG, "onClick: " + new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US).format(vTimePicker.getCalendar().getTime()));
             }
         });
+
+        Button btSetTime = (Button) findViewById(R.id.btSetTime);
+        btSetTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String time = "14/01/2016 00:55";
+                String format = "dd/MM/yyyy hh:mm";
+                vDatePicker.setDate(time, format);
+                vTimePicker.setTime(time, format);
+            }
+        });
+
+
+
 
     }
 
