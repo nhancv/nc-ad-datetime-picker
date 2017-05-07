@@ -22,7 +22,7 @@ import java.util.Locale;
  */
 
 public class WheelTimePicker extends LinearLayout {
-
+    private static final String TAG = WheelTimePicker.class.getSimpleName();
     private final Calendar calendar = Calendar.getInstance();
     private NWheelPicker hourTimePicker;
     private NWheelPicker minuteTimePicker;
@@ -81,6 +81,7 @@ public class WheelTimePicker extends LinearLayout {
                 calendar.set(Calendar.AM_PM, position);
             }
         });
+
     }
 
 
