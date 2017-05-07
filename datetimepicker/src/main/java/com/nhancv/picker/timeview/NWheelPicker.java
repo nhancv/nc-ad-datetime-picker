@@ -32,79 +32,77 @@ import java.util.Arrays;
 import java.util.List;
 
 public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable {
-    public static final int SCROLL_STATE_IDLE = 0, SCROLL_STATE_DRAGGING = 1,
-            SCROLL_STATE_SCROLLING = 2;
-
+    public static final int SCROLL_STATE_IDLE = 0, SCROLL_STATE_DRAGGING = 1, SCROLL_STATE_SCROLLING = 2;
     public static final int ALIGN_CENTER = 0, ALIGN_LEFT = 1, ALIGN_RIGHT = 2;
 
     private static final String TAG = NWheelPicker.class.getSimpleName();
 
-    private final Handler mHandler = new Handler();
+    private final Handler handler = new Handler();
 
-    private Paint mPaint;
+    private Paint paint;
     private Typeface currentTypeFace, defaultTypeFace;
-    private Scroller mScroller;
-    private VelocityTracker mTracker;
+    private Scroller scroller;
+    private VelocityTracker tracker;
 
-    private OnItemSelectedListener mOnItemSelectedListener;
-    private OnWheelChangeListener mOnWheelChangeListener;
+    private OnItemSelectedListener onItemSelectedListener;
+    private OnWheelChangeListener onWheelChangeListener;
 
-    private Rect mRectDrawn;
-    private Rect mRectIndicatorHead, mRectIndicatorFoot;
-    private Rect mRectCurrentItem;
+    private Rect rectDrawn;
+    private Rect rectIndicatorHead, rectIndicatorFoot;
+    private Rect rectCurrentItem;
 
-    private Camera mCamera;
-    private Matrix mMatrixRotate, mMatrixDepth;
+    private Camera camera;
+    private Matrix matrixRotate, matrixDepth;
 
-    private List mData;
+    private List data;
 
-    private String mMaxWidthText;
+    private String maxWidthText;
 
-    private int mVisibleItemCount, mDrawnItemCount;
+    private int visibleItemCount, drawnItemCount;
 
-    private int mHalfDrawnItemCount;
+    private int halfDrawnItemCount;
 
-    private int mTextMaxWidth, mTextMaxHeight;
+    private int textMaxWidth, textMaxHeight;
 
-    private int mItemTextColor, mSelectedItemTextColor;
+    private int itemTextColor, selectedItemTextColor;
 
-    private int mItemTextSize;
+    private int itemTextSize;
 
-    private int mIndicatorSize;
+    private int indicatorSize;
 
-    private int mIndicatorColor;
+    private int indicatorColor;
 
-    private int mCurtainColor;
+    private int curtainColor;
 
-    private int mItemSpace;
+    private int itemSpace;
 
-    private int mItemAlign;
+    private int itemAlign;
 
-    private int mItemHeight, mHalfItemHeight;
+    private int itemHeight, halfItemHeight;
 
-    private int mHalfWheelHeight;
+    private int halfWheelHeight;
 
-    private int mSelectedItemPosition;
+    private int selectedItemPosition;
 
-    private int mCurrentItemPosition;
+    private int currentItemPosition;
 
-    private int mMinFlingY, mMaxFlingY;
+    private int minFlingY, maxFlingY;
 
-    private int mMinimumVelocity = 50, mMaximumVelocity = 8000;
+    private int minimumVelocity = 50, maximumVelocity = 8000;
 
-    private int mWheelCenterX, mWheelCenterY;
+    private int wheelCenterX, wheelCenterY;
 
-    private int mDrawnCenterX, mDrawnCenterY;
+    private int drawnCenterX, drawnCenterY;
 
-    private int mScrollOffsetY;
+    private int scrollOffsetY;
 
-    private int mTextMaxWidthPosition;
+    private int textMaxWidthPosition;
 
-    private int mLastPointY;
+    private int lastPointY;
 
-    private int mDownPointY;
+    private int downPointY;
 
-    private int mTouchSlop = 8;
+    private int touchSlop = 8;
 
     private boolean hasSameWidth;
 
@@ -138,42 +136,42 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NWheelPicker);
         int idData = a.getResourceId(R.styleable.NWheelPicker_wheel_data, 0);
-        mData = Arrays.asList(getResources()
+        data = Arrays.asList(getResources()
                                       .getStringArray(idData == 0 ? R.array.WheelArrayDefault : idData));
-        mItemTextSize = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_item_text_size,
-                                                getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
-        mVisibleItemCount = a.getInt(R.styleable.NWheelPicker_wheel_visible_item_count, 7);
-        mSelectedItemPosition = a.getInt(R.styleable.NWheelPicker_wheel_selected_item_position, 0);
+        itemTextSize = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_item_text_size,
+                                               getResources().getDimensionPixelSize(R.dimen.WheelItemTextSize));
+        visibleItemCount = a.getInt(R.styleable.NWheelPicker_wheel_visible_item_count, 7);
+        selectedItemPosition = a.getInt(R.styleable.NWheelPicker_wheel_selected_item_position, 0);
         hasSameWidth = a.getBoolean(R.styleable.NWheelPicker_wheel_same_width, false);
-        mTextMaxWidthPosition =
+        textMaxWidthPosition =
                 a.getInt(R.styleable.NWheelPicker_wheel_maximum_width_text_position, -1);
-        mMaxWidthText = a.getString(R.styleable.NWheelPicker_wheel_maximum_width_text);
-        mSelectedItemTextColor = a.getColor
+        maxWidthText = a.getString(R.styleable.NWheelPicker_wheel_maximum_width_text);
+        selectedItemTextColor = a.getColor
                 (R.styleable.NWheelPicker_wheel_selected_item_text_color, -1);
-        mItemTextColor = a.getColor(R.styleable.NWheelPicker_wheel_item_text_color, 0xFF888888);
-        mItemSpace = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_item_space,
-                                             getResources().getDimensionPixelSize(R.dimen.WheelItemSpace));
+        itemTextColor = a.getColor(R.styleable.NWheelPicker_wheel_item_text_color, 0xFF888888);
+        itemSpace = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_item_space,
+                                            getResources().getDimensionPixelSize(R.dimen.WheelItemSpace));
         isCyclic = a.getBoolean(R.styleable.NWheelPicker_wheel_cyclic, false);
         hasIndicator = a.getBoolean(R.styleable.NWheelPicker_wheel_indicator, false);
-        mIndicatorColor = a.getColor(R.styleable.NWheelPicker_wheel_indicator_color, 0xFFEE3333);
-        mIndicatorSize = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_indicator_size,
-                                                 getResources().getDimensionPixelSize(R.dimen.WheelIndicatorSize));
+        indicatorColor = a.getColor(R.styleable.NWheelPicker_wheel_indicator_color, 0xFFEE3333);
+        indicatorSize = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_indicator_size,
+                                                getResources().getDimensionPixelSize(R.dimen.WheelIndicatorSize));
         hasCurtain = a.getBoolean(R.styleable.NWheelPicker_wheel_curtain, false);
-        mCurtainColor = a.getColor(R.styleable.NWheelPicker_wheel_curtain_color, 0x88FFFFFF);
+        curtainColor = a.getColor(R.styleable.NWheelPicker_wheel_curtain_color, 0x88FFFFFF);
         hasAtmospheric = a.getBoolean(R.styleable.NWheelPicker_wheel_atmospheric, false);
         isCurved = a.getBoolean(R.styleable.NWheelPicker_wheel_curved, false);
-        mItemAlign = a.getInt(R.styleable.NWheelPicker_wheel_item_align, ALIGN_CENTER);
+        itemAlign = a.getInt(R.styleable.NWheelPicker_wheel_item_align, ALIGN_CENTER);
         curtainPadding = a.getDimensionPixelSize(R.styleable.NWheelPicker_wheel_curtain_padding, 0);
         a.recycle();
 
         // Update relevant parameters when the count of visible item changed
         updateVisibleItemCount();
 
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mPaint.setTextSize(mItemTextSize);
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        paint.setTextSize(itemTextSize);
         currentTypeFace = Typeface.createFromAsset(getContext().getAssets(), "fonts/Lato-Bold.ttf");
         defaultTypeFace = Typeface.createFromAsset(getContext().getAssets(), "fonts/Lato-Medium.ttf");
-        mPaint.setTypeface(defaultTypeFace);
+        paint.setTypeface(defaultTypeFace);
 
         // Update alignment of text
         updateItemTextAlign();
@@ -181,68 +179,68 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
         // Correct sizes of text
         computeTextSize();
 
-        mScroller = new Scroller(getContext());
+        scroller = new Scroller(getContext());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
             ViewConfiguration conf = ViewConfiguration.get(getContext());
-            mMinimumVelocity = conf.getScaledMinimumFlingVelocity();
-            mMaximumVelocity = conf.getScaledMaximumFlingVelocity();
-            mTouchSlop = conf.getScaledTouchSlop();
+            minimumVelocity = conf.getScaledMinimumFlingVelocity();
+            maximumVelocity = conf.getScaledMaximumFlingVelocity();
+            touchSlop = conf.getScaledTouchSlop();
         }
-        mRectDrawn = new Rect();
+        rectDrawn = new Rect();
 
-        mRectIndicatorHead = new Rect();
-        mRectIndicatorFoot = new Rect();
+        rectIndicatorHead = new Rect();
+        rectIndicatorFoot = new Rect();
 
-        mRectCurrentItem = new Rect();
+        rectCurrentItem = new Rect();
 
-        mCamera = new Camera();
+        camera = new Camera();
 
-        mMatrixRotate = new Matrix();
-        mMatrixDepth = new Matrix();
+        matrixRotate = new Matrix();
+        matrixDepth = new Matrix();
     }
 
     private void updateVisibleItemCount() {
-        if (mVisibleItemCount < 2)
+        if (visibleItemCount < 2)
             throw new ArithmeticException("Wheel's visible item count can not be less than 2!");
 
         // Be sure count of visible item is odd number
-        if (mVisibleItemCount % 2 == 0)
-            mVisibleItemCount += 1;
-        mDrawnItemCount = mVisibleItemCount + 2;
-        mHalfDrawnItemCount = mDrawnItemCount / 2;
+        if (visibleItemCount % 2 == 0)
+            visibleItemCount += 1;
+        drawnItemCount = visibleItemCount + 2;
+        halfDrawnItemCount = drawnItemCount / 2;
     }
 
     private void computeTextSize() {
-        mTextMaxWidth = mTextMaxHeight = 0;
+        textMaxWidth = textMaxHeight = 0;
         if (hasSameWidth) {
-            mTextMaxWidth = (int) mPaint.measureText(String.valueOf(mData.get(0)));
-        } else if (isPosInRang(mTextMaxWidthPosition)) {
-            mTextMaxWidth = (int) mPaint.measureText
-                    (String.valueOf(mData.get(mTextMaxWidthPosition)));
-        } else if (!TextUtils.isEmpty(mMaxWidthText)) {
-            mTextMaxWidth = (int) mPaint.measureText(mMaxWidthText);
+            textMaxWidth = (int) paint.measureText(String.valueOf(data.get(0)));
+        } else if (isPosInRang(textMaxWidthPosition)) {
+            textMaxWidth = (int) paint.measureText
+                    (String.valueOf(data.get(textMaxWidthPosition)));
+        } else if (!TextUtils.isEmpty(maxWidthText)) {
+            textMaxWidth = (int) paint.measureText(maxWidthText);
         } else {
-            for (Object obj : mData) {
+            for (Object obj : data) {
                 String text = String.valueOf(obj);
-                int width = (int) mPaint.measureText(text);
-                mTextMaxWidth = Math.max(mTextMaxWidth, width);
+                int width = (int) paint.measureText(text);
+                textMaxWidth = Math.max(textMaxWidth, width);
             }
         }
-        Paint.FontMetrics metrics = mPaint.getFontMetrics();
-        mTextMaxHeight = (int) (metrics.bottom - metrics.top);
+        Paint.FontMetrics metrics = paint.getFontMetrics();
+        textMaxHeight = (int) (metrics.bottom - metrics.top);
     }
 
     private void updateItemTextAlign() {
-        switch (mItemAlign) {
+        switch (itemAlign) {
             case ALIGN_LEFT:
-                mPaint.setTextAlign(Paint.Align.LEFT);
+                paint.setTextAlign(Paint.Align.LEFT);
                 break;
             case ALIGN_RIGHT:
-                mPaint.setTextAlign(Paint.Align.RIGHT);
+                paint.setTextAlign(Paint.Align.RIGHT);
                 break;
             default:
-                mPaint.setTextAlign(Paint.Align.CENTER);
+                paint.setTextAlign(Paint.Align.CENTER);
                 break;
         }
     }
@@ -256,8 +254,8 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
         int sizeHeight = MeasureSpec.getSize(heightMeasureSpec);
 
         // Correct sizes of original content
-        int resultWidth = mTextMaxWidth;
-        int resultHeight = mTextMaxHeight * mVisibleItemCount + mItemSpace * (mVisibleItemCount - 1);
+        int resultWidth = textMaxWidth;
+        int resultHeight = textMaxHeight * visibleItemCount + itemSpace * (visibleItemCount - 1);
 
         // Correct view sizes again if curved is enable
         if (isCurved) {
@@ -294,25 +292,25 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         // Set content region
-        mRectDrawn.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
+        rectDrawn.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
                        getHeight() - getPaddingBottom());
 
         if (isDebug)
-            Log.i(TAG, "Wheel's drawn rect size is (" + mRectDrawn.width() + ":" +
-                       mRectDrawn.height() + ") and location is (" + mRectDrawn.left + ":" +
-                       mRectDrawn.top + ")");
+            Log.i(TAG, "Wheel's drawn rect size is (" + rectDrawn.width() + ":" +
+                       rectDrawn.height() + ") and location is (" + rectDrawn.left + ":" +
+                       rectDrawn.top + ")");
 
         // Get the center coordinates of content region
-        mWheelCenterX = mRectDrawn.centerX();
-        mWheelCenterY = mRectDrawn.centerY();
+        wheelCenterX = rectDrawn.centerX();
+        wheelCenterY = rectDrawn.centerY();
 
         // Correct item drawn center
         computeDrawnCenter();
 
-        mHalfWheelHeight = mRectDrawn.height() / 2;
+        halfWheelHeight = rectDrawn.height() / 2;
 
-        mItemHeight = mRectDrawn.height() / mVisibleItemCount;
-        mHalfItemHeight = mItemHeight / 2 + curtainPadding;
+        itemHeight = rectDrawn.height() / visibleItemCount;
+        halfItemHeight = itemHeight / 2 + curtainPadding;
 
         // Initialize fling max Y-coordinates
         computeFlingLimitY();
@@ -332,22 +330,22 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
         try {
             listRegion = new ArrayList<>();
             //top
-            for (int i = -mDrawnItemCount / 2; i < -1; i++) {
-                int top = mWheelCenterY + (i * mItemHeight);
-                int bottom = mWheelCenterY + ((i + 1) * mItemHeight);
-                Region region = new Region(0, top, mRectDrawn.width(), bottom);
+            for (int i = -drawnItemCount / 2; i < -1; i++) {
+                int top = wheelCenterY + (i * itemHeight);
+                int bottom = wheelCenterY + ((i + 1) * itemHeight);
+                Region region = new Region(0, top, rectDrawn.width(), bottom);
                 listRegion.add(region);
             }
 
             //mid
-            listRegion.add(new Region(0, mWheelCenterY + (-1 * mItemHeight), mRectDrawn.width(),
-                                      mWheelCenterY + mItemHeight));
+            listRegion.add(new Region(0, wheelCenterY + (-1 * itemHeight), rectDrawn.width(),
+                                      wheelCenterY + itemHeight));
 
             //bottom
-            for (int i = 1; i < mDrawnItemCount / 2; i++) {
-                int top = mWheelCenterY + (i * mItemHeight);
-                int bottom = mWheelCenterY + ((i + 1) * mItemHeight);
-                Region region = new Region(0, top, mRectDrawn.width(), bottom);
+            for (int i = 1; i < drawnItemCount / 2; i++) {
+                int top = wheelCenterY + (i * itemHeight);
+                int bottom = wheelCenterY + ((i + 1) * itemHeight);
+                Region region = new Region(0, top, rectDrawn.width(), bottom);
                 listRegion.add(region);
             }
         } catch (Exception e) {
@@ -356,104 +354,104 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
     }
 
     private void computeDrawnCenter() {
-        switch (mItemAlign) {
+        switch (itemAlign) {
             case ALIGN_LEFT:
-                mDrawnCenterX = mRectDrawn.left;
+                drawnCenterX = rectDrawn.left;
                 break;
             case ALIGN_RIGHT:
-                mDrawnCenterX = mRectDrawn.right;
+                drawnCenterX = rectDrawn.right;
                 break;
             default:
-                mDrawnCenterX = mWheelCenterX;
+                drawnCenterX = wheelCenterX;
                 break;
         }
-        mDrawnCenterY = (int) (mWheelCenterY - ((mPaint.ascent() + mPaint.descent()) / 2));
+        drawnCenterY = (int) (wheelCenterY - ((paint.ascent() + paint.descent()) / 2));
     }
 
     private void computeFlingLimitY() {
-        int currentItemOffset = mSelectedItemPosition * mItemHeight;
-        mMinFlingY = isCyclic ? Integer.MIN_VALUE :
-                     -mItemHeight * (mData.size() - 1) + currentItemOffset;
-        mMaxFlingY = isCyclic ? Integer.MAX_VALUE : currentItemOffset;
+        int currentItemOffset = selectedItemPosition * itemHeight;
+        minFlingY = isCyclic ? Integer.MIN_VALUE :
+                    -itemHeight * (data.size() - 1) + currentItemOffset;
+        maxFlingY = isCyclic ? Integer.MAX_VALUE : currentItemOffset;
     }
 
     private void computeIndicatorRect() {
         if (!hasIndicator) return;
-        int halfIndicatorSize = mIndicatorSize / 2;
-        int indicatorHeadCenterY = mWheelCenterY + mHalfItemHeight;
-        int indicatorFootCenterY = mWheelCenterY - mHalfItemHeight;
-        mRectIndicatorHead.set(mRectDrawn.left, indicatorHeadCenterY - halfIndicatorSize,
-                               mRectDrawn.right, indicatorHeadCenterY + halfIndicatorSize);
-        mRectIndicatorFoot.set(mRectDrawn.left, indicatorFootCenterY - halfIndicatorSize,
-                               mRectDrawn.right, indicatorFootCenterY + halfIndicatorSize);
+        int halfIndicatorSize = indicatorSize / 2;
+        int indicatorHeadCenterY = wheelCenterY + halfItemHeight;
+        int indicatorFootCenterY = wheelCenterY - halfItemHeight;
+        rectIndicatorHead.set(rectDrawn.left, indicatorHeadCenterY - halfIndicatorSize,
+                              rectDrawn.right, indicatorHeadCenterY + halfIndicatorSize);
+        rectIndicatorFoot.set(rectDrawn.left, indicatorFootCenterY - halfIndicatorSize,
+                              rectDrawn.right, indicatorFootCenterY + halfIndicatorSize);
     }
 
     private void computeCurrentItemRect() {
-        if (!hasCurtain && mSelectedItemTextColor == -1) return;
-        mRectCurrentItem.set(mRectDrawn.left, mWheelCenterY - mHalfItemHeight, mRectDrawn.right,
-                             mWheelCenterY + mHalfItemHeight);
+        if (!hasCurtain && selectedItemTextColor == -1) return;
+        rectCurrentItem.set(rectDrawn.left, wheelCenterY - halfItemHeight, rectDrawn.right,
+                            wheelCenterY + halfItemHeight);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (null != mOnWheelChangeListener)
-            mOnWheelChangeListener.onWheelScrolled(mScrollOffsetY);
+        if (null != onWheelChangeListener)
+            onWheelChangeListener.onWheelScrolled(scrollOffsetY);
 
         // Need to draw curtain or not
         if (hasCurtain) {
             canvas.save();
-            mPaint.setColor(mCurtainColor);
-            mPaint.setStyle(Paint.Style.FILL);
-            canvas.drawRect(mRectCurrentItem, mPaint);
+            paint.setColor(curtainColor);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawRect(rectCurrentItem, paint);
             canvas.restore();
         }
 
         // Need to draw indicator or not
         if (hasIndicator) {
-            mPaint.setColor(mIndicatorColor);
-            mPaint.setStyle(Paint.Style.FILL);
-            canvas.drawRect(mRectIndicatorHead, mPaint);
-            canvas.drawRect(mRectIndicatorFoot, mPaint);
+            paint.setColor(indicatorColor);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawRect(rectIndicatorHead, paint);
+            canvas.drawRect(rectIndicatorFoot, paint);
         }
         if (isDebug) {
-            mPaint.setColor(0x4433EE33);
-            mPaint.setStyle(Paint.Style.FILL);
-            canvas.drawRect(0, 0, getPaddingLeft(), getHeight(), mPaint);
-            canvas.drawRect(0, 0, getWidth(), getPaddingTop(), mPaint);
-            canvas.drawRect(getWidth() - getPaddingRight(), 0, getWidth(), getHeight(), mPaint);
-            canvas.drawRect(0, getHeight() - getPaddingBottom(), getWidth(), getHeight(), mPaint);
+            paint.setColor(0x4433EE33);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawRect(0, 0, getPaddingLeft(), getHeight(), paint);
+            canvas.drawRect(0, 0, getWidth(), getPaddingTop(), paint);
+            canvas.drawRect(getWidth() - getPaddingRight(), 0, getWidth(), getHeight(), paint);
+            canvas.drawRect(0, getHeight() - getPaddingBottom(), getWidth(), getHeight(), paint);
         }
 
-        int drawnDataStartPos = -mScrollOffsetY / mItemHeight - mHalfDrawnItemCount;
-        for (int drawnDataPos = drawnDataStartPos + mSelectedItemPosition,
-             drawnOffsetPos = -mHalfDrawnItemCount;
-             drawnDataPos < drawnDataStartPos + mSelectedItemPosition + mDrawnItemCount;
+        int drawnDataStartPos = -scrollOffsetY / itemHeight - halfDrawnItemCount;
+        for (int drawnDataPos = drawnDataStartPos + selectedItemPosition,
+             drawnOffsetPos = -halfDrawnItemCount;
+             drawnDataPos < drawnDataStartPos + selectedItemPosition + drawnItemCount;
              drawnDataPos++, drawnOffsetPos++) {
             String data = "";
             if (isCyclic) {
-                int actualPos = drawnDataPos % mData.size();
-                actualPos = actualPos < 0 ? (actualPos + mData.size()) : actualPos;
-                data = String.valueOf(mData.get(actualPos));
+                int actualPos = drawnDataPos % this.data.size();
+                actualPos = actualPos < 0 ? (actualPos + this.data.size()) : actualPos;
+                data = String.valueOf(this.data.get(actualPos));
             } else {
                 if (isPosInRang(drawnDataPos))
-                    data = String.valueOf(mData.get(drawnDataPos));
+                    data = String.valueOf(this.data.get(drawnDataPos));
             }
-            mPaint.setColor(mItemTextColor);
-            mPaint.setStyle(Paint.Style.FILL);
-            int mDrawnItemCenterY = mDrawnCenterY + (drawnOffsetPos * mItemHeight) +
-                                    mScrollOffsetY % mItemHeight;
+            paint.setColor(itemTextColor);
+            paint.setStyle(Paint.Style.FILL);
+            int mDrawnItemCenterY = drawnCenterY + (drawnOffsetPos * itemHeight) +
+                                    scrollOffsetY % itemHeight;
 
             int distanceToCenter = 0;
             if (isCurved) {
                 // Correct ratio of item's drawn center to wheel center
-                float ratio = (mDrawnCenterY - Math.abs(mDrawnCenterY - mDrawnItemCenterY) -
-                               mRectDrawn.top) * 1.0F / (mDrawnCenterY - mRectDrawn.top);
+                float ratio = (drawnCenterY - Math.abs(drawnCenterY - mDrawnItemCenterY) -
+                               rectDrawn.top) * 1.0F / (drawnCenterY - rectDrawn.top);
 
                 // Correct unit
                 int unit = 0;
-                if (mDrawnItemCenterY > mDrawnCenterY)
+                if (mDrawnItemCenterY > drawnCenterY)
                     unit = 1;
-                else if (mDrawnItemCenterY < mDrawnCenterY)
+                else if (mDrawnItemCenterY < drawnCenterY)
                     unit = -1;
 
                 float degree = (-(1 - ratio) * 90 * unit);
@@ -461,77 +459,77 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
                 if (degree > 90) degree = 90;
                 distanceToCenter = computeSpace((int) degree);
 
-                int transX = mWheelCenterX;
-                switch (mItemAlign) {
+                int transX = wheelCenterX;
+                switch (itemAlign) {
                     case ALIGN_LEFT:
-                        transX = mRectDrawn.left;
+                        transX = rectDrawn.left;
                         break;
                     case ALIGN_RIGHT:
-                        transX = mRectDrawn.right;
+                        transX = rectDrawn.right;
                         break;
                 }
-                int transY = mWheelCenterY - distanceToCenter;
+                int transY = wheelCenterY - distanceToCenter;
 
-                mCamera.save();
-                mCamera.rotateX(degree);
-                mCamera.getMatrix(mMatrixRotate);
-                mCamera.restore();
-                mMatrixRotate.preTranslate(-transX, -transY);
-                mMatrixRotate.postTranslate(transX, transY);
+                camera.save();
+                camera.rotateX(degree);
+                camera.getMatrix(matrixRotate);
+                camera.restore();
+                matrixRotate.preTranslate(-transX, -transY);
+                matrixRotate.postTranslate(transX, transY);
 
-                mCamera.save();
-                mCamera.translate(0, 0, computeDepth((int) degree));
-                mCamera.getMatrix(mMatrixDepth);
-                mCamera.restore();
-                mMatrixDepth.preTranslate(-transX, -transY);
-                mMatrixDepth.postTranslate(transX, transY);
+                camera.save();
+                camera.translate(0, 0, computeDepth((int) degree));
+                camera.getMatrix(matrixDepth);
+                camera.restore();
+                matrixDepth.preTranslate(-transX, -transY);
+                matrixDepth.postTranslate(transX, transY);
 
-                mMatrixRotate.postConcat(mMatrixDepth);
+                matrixRotate.postConcat(matrixDepth);
             }
             if (hasAtmospheric) {
-                int alpha = (int) ((mDrawnCenterY - Math.abs(mDrawnCenterY - mDrawnItemCenterY)) *
-                                   1.0F / mDrawnCenterY * 255);
+                int alpha = (int) ((drawnCenterY - Math.abs(drawnCenterY - mDrawnItemCenterY)) *
+                                   1.0F / drawnCenterY * 255);
                 alpha = alpha < 0 ? 0 : alpha;
-                mPaint.setAlpha(alpha);
+                paint.setAlpha(alpha);
             }
             // Correct item's drawn centerY base on curved state
-            int drawnCenterY = isCurved ? mDrawnCenterY - distanceToCenter : mDrawnItemCenterY;
+            int drawnCenterY = isCurved ? this.drawnCenterY - distanceToCenter : mDrawnItemCenterY;
 
             // Judges need to draw different color for current item or not
-            if (mSelectedItemTextColor != -1) {
+            if (selectedItemTextColor != -1) {
                 canvas.save();
-                if (isCurved) canvas.concat(mMatrixRotate);
-                canvas.clipRect(mRectCurrentItem, Region.Op.DIFFERENCE);
-                canvas.drawText(data, mDrawnCenterX, drawnCenterY, mPaint);
+                if (isCurved) canvas.concat(matrixRotate);
+                canvas.clipRect(rectCurrentItem, Region.Op.DIFFERENCE);
+                canvas.drawText(data, drawnCenterX, drawnCenterY, paint);
                 canvas.restore();
 
-                mPaint.setColor(mSelectedItemTextColor);
-                mPaint.setTypeface(currentTypeFace);
-                mPaint.setTextSize(mItemTextSize + 10);
+                paint.setColor(selectedItemTextColor);
+                paint.setTypeface(currentTypeFace);
+                paint.setTextSize(itemTextSize + 10);
                 canvas.save();
-                if (isCurved) canvas.concat(mMatrixRotate);
-                canvas.clipRect(mRectCurrentItem);
-                canvas.drawText(data, mDrawnCenterX, drawnCenterY, mPaint);
+                if (isCurved) canvas.concat(matrixRotate);
+                canvas.clipRect(rectCurrentItem);
+                canvas.drawText(data, drawnCenterX, drawnCenterY, paint);
                 canvas.restore();
-                mPaint.setColor(mItemTextColor);
-                mPaint.setTypeface(defaultTypeFace);
-                mPaint.setTextSize(mItemTextSize);
+                paint.setColor(itemTextColor);
+                paint.setTypeface(defaultTypeFace);
+                paint.setTextSize(itemTextSize);
 
 
             } else {
                 canvas.save();
-                canvas.clipRect(mRectDrawn);
-                if (isCurved) canvas.concat(mMatrixRotate);
-                canvas.drawText(data, mDrawnCenterX, drawnCenterY, mPaint);
+                canvas.clipRect(rectDrawn);
+                if (isCurved) canvas.concat(matrixRotate);
+                canvas.drawText(data, drawnCenterX, drawnCenterY, paint);
                 canvas.restore();
             }
             if (isDebug) {
                 canvas.save();
-                canvas.clipRect(mRectDrawn);
-                mPaint.setColor(0xFFEE3333);
-                int lineCenterY = mWheelCenterY + (drawnOffsetPos * mItemHeight);
-                canvas.drawLine(mRectDrawn.left, lineCenterY, mRectDrawn.right, lineCenterY,
-                                mPaint);
+                canvas.clipRect(rectDrawn);
+                paint.setColor(0xFFEE3333);
+                int lineCenterY = wheelCenterY + (drawnOffsetPos * itemHeight);
+                canvas.drawLine(rectDrawn.left, lineCenterY, rectDrawn.right, lineCenterY,
+                                paint);
                 canvas.restore();
             }
         }
@@ -539,15 +537,15 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
     }
 
     private boolean isPosInRang(int position) {
-        return position >= 0 && position < mData.size();
+        return position >= 0 && position < data.size();
     }
 
     private int computeSpace(int degree) {
-        return (int) (Math.sin(Math.toRadians(degree)) * mHalfWheelHeight);
+        return (int) (Math.sin(Math.toRadians(degree)) * halfWheelHeight);
     }
 
     private int computeDepth(int degree) {
-        return (int) (mHalfWheelHeight - Math.cos(Math.toRadians(degree)) * mHalfWheelHeight);
+        return (int) (halfWheelHeight - Math.cos(Math.toRadians(degree)) * halfWheelHeight);
     }
 
     @Override
@@ -556,16 +554,16 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
             case MotionEvent.ACTION_DOWN:
                 if (null != getParent())
                     getParent().requestDisallowInterceptTouchEvent(true);
-                if (null == mTracker)
-                    mTracker = VelocityTracker.obtain();
+                if (null == tracker)
+                    tracker = VelocityTracker.obtain();
                 else
-                    mTracker.clear();
-                mTracker.addMovement(event);
-                if (!mScroller.isFinished()) {
-                    mScroller.abortAnimation();
+                    tracker.clear();
+                tracker.addMovement(event);
+                if (!scroller.isFinished()) {
+                    scroller.abortAnimation();
                     isForceFinishScroll = true;
                 }
-                mDownPointY = mLastPointY = (int) event.getY();
+                downPointY = lastPointY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
 
@@ -574,20 +572,20 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
                     break;
                 }
 
-                if (Math.abs(mDownPointY - event.getY()) < mTouchSlop) {
+                if (Math.abs(downPointY - event.getY()) < touchSlop) {
                     isClick = true;
                     break;
                 }
                 isClick = false;
-                mTracker.addMovement(event);
-                if (null != mOnWheelChangeListener)
-                    mOnWheelChangeListener.onWheelScrollStateChanged(SCROLL_STATE_DRAGGING);
+                tracker.addMovement(event);
+                if (null != onWheelChangeListener)
+                    onWheelChangeListener.onWheelScrollStateChanged(SCROLL_STATE_DRAGGING);
 
                 // Scroll WheelPicker's content
-                float move = event.getY() - mLastPointY;
+                float move = event.getY() - lastPointY;
                 if (Math.abs(move) < 1) break;
-                mScrollOffsetY += move;
-                mLastPointY = (int) event.getY();
+                scrollOffsetY += move;
+                lastPointY = (int) event.getY();
                 invalidate();
 
                 break;
@@ -598,55 +596,55 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
                     int indexSelected = -1;
                     for (int i = 0; i < listRegion.size(); i++) {
                         Region region = listRegion.get(i);
-                        if (region.contains(0, mDownPointY)) {
+                        if (region.contains(0, downPointY)) {
                             indexSelected = i;
                             break;
                         }
                     }
-                    int mid = mVisibleItemCount / 2;
-                    int desPosition = mCurrentItemPosition - (mid - indexSelected);
-                    if (indexSelected != -1 && indexSelected != mid && desPosition >= 0 && desPosition < mData.size()) {
+                    int mid = visibleItemCount / 2;
+                    int desPosition = currentItemPosition - (mid - indexSelected);
+                    if (indexSelected != -1 && indexSelected != mid && desPosition >= 0 && desPosition < data.size()) {
                         smoothScrollToPosition(desPosition);
                     }
 
                     break;
                 }
-                mTracker.addMovement(event);
+                tracker.addMovement(event);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT)
-                    mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+                    tracker.computeCurrentVelocity(1000, maximumVelocity);
                 else
-                    mTracker.computeCurrentVelocity(1000);
+                    tracker.computeCurrentVelocity(1000);
 
                 // Judges the WheelPicker is scroll or fling base on current velocity
                 isForceFinishScroll = false;
-                int velocity = (int) mTracker.getYVelocity();
-                if (Math.abs(velocity) > mMinimumVelocity) {
-                    mScroller.fling(0, mScrollOffsetY, 0, velocity, 0, 0, mMinFlingY, mMaxFlingY);
-                    mScroller.setFinalY(mScroller.getFinalY() +
-                                        computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
+                int velocity = (int) tracker.getYVelocity();
+                if (Math.abs(velocity) > minimumVelocity) {
+                    scroller.fling(0, scrollOffsetY, 0, velocity, 0, 0, minFlingY, maxFlingY);
+                    scroller.setFinalY(scroller.getFinalY() +
+                                       computeDistanceToEndPoint(scroller.getFinalY() % itemHeight));
                 } else {
-                    mScroller.startScroll(0, mScrollOffsetY, 0,
-                                          computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
+                    scroller.startScroll(0, scrollOffsetY, 0,
+                                         computeDistanceToEndPoint(scrollOffsetY % itemHeight));
                 }
                 // Correct coordinates
                 if (!isCyclic)
-                    if (mScroller.getFinalY() > mMaxFlingY)
-                        mScroller.setFinalY(mMaxFlingY);
-                    else if (mScroller.getFinalY() < mMinFlingY)
-                        mScroller.setFinalY(mMinFlingY);
-                mHandler.post(this);
-                if (null != mTracker) {
-                    mTracker.recycle();
-                    mTracker = null;
+                    if (scroller.getFinalY() > maxFlingY)
+                        scroller.setFinalY(maxFlingY);
+                    else if (scroller.getFinalY() < minFlingY)
+                        scroller.setFinalY(minFlingY);
+                handler.post(this);
+                if (null != tracker) {
+                    tracker.recycle();
+                    tracker = null;
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 if (null != getParent())
                     getParent().requestDisallowInterceptTouchEvent(false);
-                if (null != mTracker) {
-                    mTracker.recycle();
-                    mTracker = null;
+                if (null != tracker) {
+                    tracker.recycle();
+                    tracker = null;
                 }
                 break;
         }
@@ -654,11 +652,11 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
     }
 
     private int computeDistanceToEndPoint(int remainder) {
-        if (Math.abs(remainder) > mHalfItemHeight)
-            if (mScrollOffsetY < 0)
-                return -mItemHeight - remainder;
+        if (Math.abs(remainder) > halfItemHeight)
+            if (scrollOffsetY < 0)
+                return -itemHeight - remainder;
             else
-                return mItemHeight - remainder;
+                return itemHeight - remainder;
         else
             return -remainder;
     }
@@ -666,15 +664,15 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
     public void smoothScrollToPosition(int position) {
         try {
             if (!isCyclic) {
-                position %= mData.size();
-                position = position < 0 ? position + mData.size() : position;
+                position %= data.size();
+                position = position < 0 ? position + data.size() : position;
 
-                int toPos = -(position - mSelectedItemPosition);
-                int offset = Math.abs(position - mCurrentItemPosition);
-                int fromPos = (position > mCurrentItemPosition) ? (toPos + offset) :
+                int toPos = -(position - selectedItemPosition);
+                int offset = Math.abs(position - currentItemPosition);
+                int fromPos = (position > currentItemPosition) ? (toPos + offset) :
                               (toPos - offset);
-                int from = fromPos * mItemHeight;
-                int target = toPos * mItemHeight;
+                int from = fromPos * itemHeight;
+                int target = toPos * itemHeight;
 
                 ValueAnimator vAnimator = new ValueAnimator();
                 vAnimator.setIntValues(from, target);
@@ -684,7 +682,7 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
                 vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        mScrollOffsetY = (int) animation.getAnimatedValue();
+                        scrollOffsetY = (int) animation.getAnimatedValue();
                         invalidate();
                     }
                 });
@@ -693,11 +691,11 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
                     public void onAnimationEnd(Animator animation) {
                         //Correct coordinates
                         if (!isCyclic) {
-                            if (mScroller.getFinalY() > mMaxFlingY)
-                                mScroller.setFinalY(mMaxFlingY);
-                            else if (mScroller.getFinalY() < mMinFlingY)
-                                mScroller.setFinalY(mMinFlingY);
-                            mHandler.post(NWheelPicker.this);
+                            if (scroller.getFinalY() > maxFlingY)
+                                scroller.setFinalY(maxFlingY);
+                            else if (scroller.getFinalY() < minFlingY)
+                                scroller.setFinalY(minFlingY);
+                            handler.post(NWheelPicker.this);
                         }
                     }
                 });
@@ -711,17 +709,17 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
     public void scrollToPosition(int position) {
         try {
             if (!isCyclic) {
-                position %= mData.size();
-                position = position < 0 ? position + mData.size() : position;
+                position %= data.size();
+                position = position < 0 ? position + data.size() : position;
 
-                mScrollOffsetY = -(position - mSelectedItemPosition) * mItemHeight;
-                mScroller.startScroll(0, mScrollOffsetY, 0,
-                                      computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
-                if (mScroller.getFinalY() > mMaxFlingY)
-                    mScroller.setFinalY(mMaxFlingY);
-                else if (mScroller.getFinalY() < mMinFlingY)
-                    mScroller.setFinalY(mMinFlingY);
-                mHandler.post(NWheelPicker.this);
+                scrollOffsetY = -(position - selectedItemPosition) * itemHeight;
+                scroller.startScroll(0, scrollOffsetY, 0,
+                                     computeDistanceToEndPoint(scrollOffsetY % itemHeight));
+                if (scroller.getFinalY() > maxFlingY)
+                    scroller.setFinalY(maxFlingY);
+                else if (scroller.getFinalY() < minFlingY)
+                    scroller.setFinalY(minFlingY);
+                handler.post(NWheelPicker.this);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -730,27 +728,27 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public void run() {
-        if (null == mData || mData.size() == 0) return;
-        if (mScroller.isFinished() && !isForceFinishScroll) {
-            if (mItemHeight == 0) return;
-            int position = (-mScrollOffsetY / mItemHeight + mSelectedItemPosition) % mData.size();
-            position = position < 0 ? position + mData.size() : position;
+        if (null == data || data.size() == 0) return;
+        if (scroller.isFinished() && !isForceFinishScroll) {
+            if (itemHeight == 0) return;
+            int position = (-scrollOffsetY / itemHeight + selectedItemPosition) % data.size();
+            position = position < 0 ? position + data.size() : position;
             if (isDebug)
-                Log.i(TAG, position + ":" + mData.get(position) + ":" + mScrollOffsetY);
-            mCurrentItemPosition = position;
-            if (null != mOnItemSelectedListener)
-                mOnItemSelectedListener.onItemSelected(this, mData.get(position), position);
-            if (null != mOnWheelChangeListener) {
-                mOnWheelChangeListener.onWheelSelected(position);
-                mOnWheelChangeListener.onWheelScrollStateChanged(SCROLL_STATE_IDLE);
+                Log.i(TAG, position + ":" + data.get(position) + ":" + scrollOffsetY);
+            currentItemPosition = position;
+            if (null != onItemSelectedListener)
+                onItemSelectedListener.onItemSelected(this, data.get(position), position);
+            if (null != onWheelChangeListener) {
+                onWheelChangeListener.onWheelSelected(position);
+                onWheelChangeListener.onWheelScrollStateChanged(SCROLL_STATE_IDLE);
             }
         }
-        if (mScroller.computeScrollOffset()) {
-            if (null != mOnWheelChangeListener)
-                mOnWheelChangeListener.onWheelScrollStateChanged(SCROLL_STATE_SCROLLING);
-            mScrollOffsetY = mScroller.getCurrY();
+        if (scroller.computeScrollOffset()) {
+            if (null != onWheelChangeListener)
+                onWheelChangeListener.onWheelScrollStateChanged(SCROLL_STATE_SCROLLING);
+            scrollOffsetY = scroller.getCurrY();
             postInvalidate();
-            mHandler.postDelayed(this, 16);
+            handler.postDelayed(this, 16);
         }
     }
 
@@ -761,12 +759,12 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getVisibleItemCount() {
-        return mVisibleItemCount;
+        return visibleItemCount;
     }
 
     @Override
     public void setVisibleItemCount(int count) {
-        mVisibleItemCount = count;
+        visibleItemCount = count;
         updateVisibleItemCount();
         requestLayout();
     }
@@ -785,21 +783,21 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public void setOnItemSelectedListener(OnItemSelectedListener listener) {
-        mOnItemSelectedListener = listener;
+        onItemSelectedListener = listener;
     }
 
     @Override
     public int getSelectedItemPosition() {
-        return mSelectedItemPosition;
+        return selectedItemPosition;
     }
 
     @Override
     public void setSelectedItemPosition(int position) {
-        position = Math.min(position, mData.size() - 1);
+        position = Math.min(position, data.size() - 1);
         position = Math.max(position, 0);
-        mSelectedItemPosition = position;
-        mCurrentItemPosition = position;
-        mScrollOffsetY = 0;
+        selectedItemPosition = position;
+        currentItemPosition = position;
+        scrollOffsetY = 0;
         computeFlingLimitY();
         requestLayout();
         invalidate();
@@ -807,26 +805,26 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getCurrentItemPosition() {
-        return mCurrentItemPosition;
+        return currentItemPosition;
     }
 
     @Override
     public List getData() {
-        return mData;
+        return data;
     }
 
     @Override
     public void setData(List data) {
         if (null == data)
             throw new NullPointerException("WheelPicker's data can not be null!");
-        mData = data;
+        this.data = data;
 
-        if (mSelectedItemPosition > data.size() - 1 || mCurrentItemPosition > data.size() - 1) {
-            mSelectedItemPosition = mCurrentItemPosition = data.size() - 1;
+        if (selectedItemPosition > data.size() - 1 || currentItemPosition > data.size() - 1) {
+            selectedItemPosition = currentItemPosition = data.size() - 1;
         } else {
-            mSelectedItemPosition = mCurrentItemPosition;
+            selectedItemPosition = currentItemPosition;
         }
-        mScrollOffsetY = 0;
+        scrollOffsetY = 0;
         computeTextSize();
         computeFlingLimitY();
         requestLayout();
@@ -847,19 +845,19 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public void setOnWheelChangeListener(OnWheelChangeListener listener) {
-        mOnWheelChangeListener = listener;
+        onWheelChangeListener = listener;
     }
 
     @Override
     public String getMaximumWidthText() {
-        return mMaxWidthText;
+        return maxWidthText;
     }
 
     @Override
     public void setMaximumWidthText(String text) {
         if (null == text)
             throw new NullPointerException("Maximum width text can not be null!");
-        mMaxWidthText = text;
+        maxWidthText = text;
         computeTextSize();
         requestLayout();
         invalidate();
@@ -867,15 +865,15 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getMaximumWidthTextPosition() {
-        return mTextMaxWidthPosition;
+        return textMaxWidthPosition;
     }
 
     @Override
     public void setMaximumWidthTextPosition(int position) {
         if (!isPosInRang(position))
             throw new ArrayIndexOutOfBoundsException("Maximum width text Position must in [0, " +
-                                                     mData.size() + "), but current is " + position);
-        mTextMaxWidthPosition = position;
+                                                     data.size() + "), but current is " + position);
+        textMaxWidthPosition = position;
         computeTextSize();
         requestLayout();
         invalidate();
@@ -883,36 +881,36 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getSelectedItemTextColor() {
-        return mSelectedItemTextColor;
+        return selectedItemTextColor;
     }
 
     @Override
     public void setSelectedItemTextColor(int color) {
-        mSelectedItemTextColor = color;
+        selectedItemTextColor = color;
         computeCurrentItemRect();
         invalidate();
     }
 
     @Override
     public int getItemTextColor() {
-        return mItemTextColor;
+        return itemTextColor;
     }
 
     @Override
     public void setItemTextColor(int color) {
-        mItemTextColor = color;
+        itemTextColor = color;
         invalidate();
     }
 
     @Override
     public int getItemTextSize() {
-        return mItemTextSize;
+        return itemTextSize;
     }
 
     @Override
     public void setItemTextSize(int size) {
-        mItemTextSize = size;
-        mPaint.setTextSize(mItemTextSize);
+        itemTextSize = size;
+        paint.setTextSize(itemTextSize);
         computeTextSize();
         requestLayout();
         invalidate();
@@ -920,12 +918,12 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getItemSpace() {
-        return mItemSpace;
+        return itemSpace;
     }
 
     @Override
     public void setItemSpace(int space) {
-        mItemSpace = space;
+        itemSpace = space;
         requestLayout();
         invalidate();
     }
@@ -944,24 +942,24 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getIndicatorSize() {
-        return mIndicatorSize;
+        return indicatorSize;
     }
 
     @Override
     public void setIndicatorSize(int size) {
-        mIndicatorSize = size;
+        indicatorSize = size;
         computeIndicatorRect();
         invalidate();
     }
 
     @Override
     public int getIndicatorColor() {
-        return mIndicatorColor;
+        return indicatorColor;
     }
 
     @Override
     public void setIndicatorColor(int color) {
-        mIndicatorColor = color;
+        indicatorColor = color;
         invalidate();
     }
 
@@ -979,12 +977,12 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getCurtainColor() {
-        return mCurtainColor;
+        return curtainColor;
     }
 
     @Override
     public void setCurtainColor(int color) {
-        mCurtainColor = color;
+        curtainColor = color;
         invalidate();
     }
 
@@ -1013,12 +1011,12 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public int getItemAlign() {
-        return mItemAlign;
+        return itemAlign;
     }
 
     @Override
     public void setItemAlign(int align) {
-        mItemAlign = align;
+        itemAlign = align;
         updateItemTextAlign();
         computeDrawnCenter();
         invalidate();
@@ -1026,15 +1024,15 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     @Override
     public Typeface getTypeface() {
-        if (null != mPaint)
-            return mPaint.getTypeface();
+        if (null != paint)
+            return paint.getTypeface();
         return null;
     }
 
     @Override
     public void setTypeface(Typeface tf) {
-        if (null != mPaint)
-            mPaint.setTypeface(tf);
+        if (null != paint)
+            paint.setTypeface(tf);
         computeTextSize();
         requestLayout();
         invalidate();

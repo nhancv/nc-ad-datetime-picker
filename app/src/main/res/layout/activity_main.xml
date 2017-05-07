@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.nhancv.picker.timeview.widgets.WheelTimePicker
+    <com.nhancv.picker.timeview.WheelTimePicker
         android:id="@+id/vTimePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

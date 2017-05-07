@@ -1,4 +1,4 @@
-package com.nhancv.picker.timeview.widgets;
+package com.nhancv.picker.timeview;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
 import com.nhancv.picker.R;
-import com.nhancv.picker.timeview.NWheelPicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

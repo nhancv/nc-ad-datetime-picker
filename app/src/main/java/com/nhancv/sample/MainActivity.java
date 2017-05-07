@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.nhancv.picker.dateview.NDatePicker;
-import com.nhancv.picker.timeview.widgets.WheelTimePicker;
+import com.nhancv.picker.timeview.WheelTimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
