@@ -665,42 +665,44 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     public void smoothScrollToPosition(int position) {
         try {
-            position %= mData.size();
-            position = position < 0 ? position + mData.size() : position;
+            if (!isCyclic) {
+                position %= mData.size();
+                position = position < 0 ? position + mData.size() : position;
 
-            int toPos = -(position - mSelectedItemPosition);
-            int offset = Math.abs(position - mCurrentItemPosition);
-            int fromPos = (position > mCurrentItemPosition) ? (toPos + offset) :
-                          (toPos - offset);
-            int from = fromPos * mItemHeight;
-            int target = toPos * mItemHeight;
+                int toPos = -(position - mSelectedItemPosition);
+                int offset = Math.abs(position - mCurrentItemPosition);
+                int fromPos = (position > mCurrentItemPosition) ? (toPos + offset) :
+                              (toPos - offset);
+                int from = fromPos * mItemHeight;
+                int target = toPos * mItemHeight;
 
-            ValueAnimator vAnimator = new ValueAnimator();
-            vAnimator.setIntValues(from, target);
-            vAnimator.setDuration(500);
-            vAnimator.setEvaluator(new IntEvaluator());
-            vAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-            vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mScrollOffsetY = (int) animation.getAnimatedValue();
-                    invalidate();
-                }
-            });
-            vAnimator.addListener(new AnimatorListener() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    //Correct coordinates
-                    if (!isCyclic) {
-                        if (mScroller.getFinalY() > mMaxFlingY)
-                            mScroller.setFinalY(mMaxFlingY);
-                        else if (mScroller.getFinalY() < mMinFlingY)
-                            mScroller.setFinalY(mMinFlingY);
-                        mHandler.post(NWheelPicker.this);
+                ValueAnimator vAnimator = new ValueAnimator();
+                vAnimator.setIntValues(from, target);
+                vAnimator.setDuration(500);
+                vAnimator.setEvaluator(new IntEvaluator());
+                vAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mScrollOffsetY = (int) animation.getAnimatedValue();
+                        invalidate();
                     }
-                }
-            });
-            vAnimator.start();
+                });
+                vAnimator.addListener(new AnimatorListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        //Correct coordinates
+                        if (!isCyclic) {
+                            if (mScroller.getFinalY() > mMaxFlingY)
+                                mScroller.setFinalY(mMaxFlingY);
+                            else if (mScroller.getFinalY() < mMinFlingY)
+                                mScroller.setFinalY(mMinFlingY);
+                            mHandler.post(NWheelPicker.this);
+                        }
+                    }
+                });
+                vAnimator.start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -708,13 +710,13 @@ public class NWheelPicker extends View implements IDebug, IWheelPicker, Runnable
 
     public void scrollToPosition(int position) {
         try {
-            position %= mData.size();
-            position = position < 0 ? position + mData.size() : position;
-
-            mScrollOffsetY = -(position - mSelectedItemPosition) * mItemHeight;
-            mScroller.startScroll(0, mScrollOffsetY, 0,
-                                  computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
             if (!isCyclic) {
+                position %= mData.size();
+                position = position < 0 ? position + mData.size() : position;
+
+                mScrollOffsetY = -(position - mSelectedItemPosition) * mItemHeight;
+                mScroller.startScroll(0, mScrollOffsetY, 0,
+                                      computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
                 if (mScroller.getFinalY() > mMaxFlingY)
                     mScroller.setFinalY(mMaxFlingY);
                 else if (mScroller.getFinalY() < mMinFlingY)
